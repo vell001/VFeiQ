@@ -1,0 +1,26 @@
+[33mcommit 5ab6c776c08f566ab951badb9550d8d262a608fb[m
+Merge: 93149da fa4d8ff
+Author: vell001 <vell001@qq.com>
+Date:   Wed Jul 9 21:02:17 2014 +0800
+
+    Merge pull request #1 from VellBibi/master
+    
+    removed the useless file
+
+[33mcommit fa4d8ff7307ac7c17e694038700e47096034dc05[m
+Author: vell001 <vell001@qq.com>
+Date:   Wed Jul 9 20:47:59 2014 +0800
+
+    first use vellbibi
+
+[33mcommit 93149da373b286c106c0b0a74cfdf9ece2b8e05a[m
+Author: vell001 <vell001@qq.com>
+Date:   Wed Jul 9 17:07:03 2014 +0800
+
+    chat
+
+[33mcommit b0c833c01a13cf221e32f08246b7bf69d1e03cac[m
+Author: vell001 <vell001@qq.com>
+Date:   Wed Jul 9 17:03:14 2014 +0800
+
+    Initial commit
