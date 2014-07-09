@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>skins/defaultSkin.css</file>
+    </qresource>
+</RCC>

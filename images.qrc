@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/down_direction.png</file>
+        <file>images/normal_direction.png</file>
+        <file>images/user_image.png</file>
+        <file>images/weather_1.gif</file>
+        <file>images/search.png</file>
+    </qresource>
+</RCC>
