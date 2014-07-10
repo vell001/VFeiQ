@@ -1,3 +1,9 @@
+/**********************************************************************
+** Copyright (C) 2014 vell001
+** Author: VellBibi
+** Description:
+**
+**********************************************************************/
 #ifndef CHATUDPSOCKET_H
 #define CHATUDPSOCKET_H
 
@@ -5,7 +11,7 @@
 #include <QUdpSocket>
 #include <QUuid>
 #include <QList>
-#include "ChatMessage.h"
+#include "model/ChatMessage.h"
 class ChatUDPSocket : public QObject
 {
     Q_OBJECT

@@ -1,8 +1,14 @@
+/**********************************************************************
+** Copyright (C) 2014 vell001
+** Author: VellBibi
+** Description:
+**
+**********************************************************************/
 #ifndef CHATFORM_H
 #define CHATFORM_H
 
 #include <QWidget>
-#include "ChatMessage.h"
+#include "model/ChatMessage.h"
 #include "ChatUDPSocket.h"
 #include <QListWidgetItem>
 #include <QKeyEvent>

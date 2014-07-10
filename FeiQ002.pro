@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     ChatForm.cpp \
     ChatUDPSocket.cpp \
-    ChatMessage.cpp
+    model/ChatMessage.cpp \
+    model/Friend.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
     ChatUDPSocket.h \
-    ChatMessage.h
+    model/ChatMessage.h \
+    model/Friend.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui

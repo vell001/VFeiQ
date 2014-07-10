@@ -1,3 +1,9 @@
+/**********************************************************************
+** Copyright (C) 2014 vell001
+** Author: VellBibi
+** Description:
+**
+**********************************************************************/
 #ifndef CHATMESSAGE_H
 #define CHATMESSAGE_H
 
@@ -15,6 +21,7 @@ public:
     QString getContent();
     QHostAddress getReceiver();
     QUuid getUuid();
+
     void setContent(const QString& content);
     void setReceiver(const QHostAddress& receiver);
     void setUuid(const QUuid& uuid);
