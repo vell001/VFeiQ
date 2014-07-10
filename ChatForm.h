@@ -9,9 +9,11 @@
 
 #include <QWidget>
 #include "model/ChatMessage.h"
-#include "ChatUDPSocket.h"
+#include "service/ChatService.h"
 #include <QListWidgetItem>
 #include <QKeyEvent>
+#include <model/User.h>
+#include "util/SettingUtil.h"
 
 namespace Ui {
 class ChatForm;
@@ -22,19 +24,21 @@ class ChatForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit ChatForm(QWidget *parent = 0);
+    explicit ChatForm(const User &receiver, QWidget *parent = 0);
     ~ChatForm();
+
 protected:
     void keyPressEvent(QKeyEvent *e);
 private slots:
     void on_sendButton_clicked();
-    void sendError(QString errorMessage);
+    void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
-    void receiveSuccess(QString content);
+    void receiveSuccess(ChatMessage message);
 
 private:
     Ui::ChatForm *ui;
-    ChatUDPSocket *mChatUDPSocket;
+    ChatService *mChatService;
+    User receiver;
     void sendMessage();
 };
 

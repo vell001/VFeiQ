@@ -5,8 +5,8 @@
 **      'uuid' will auto create when new a object
 **********************************************************************/
 
-#ifndef FRIEND_H
-#define FRIEND_H
+#ifndef USER_H
+#define USER_H
 
 #include <QObject>
 #include <QUuid>
@@ -14,11 +14,13 @@
 #include <QDateTime>
 #include <QHostAddress>
 
-class Friend : public QObject
+class User : public QObject
 {
     Q_OBJECT
 public:
-    explicit Friend(QObject *parent = 0);
+    explicit User(QObject *parent = 0);
+    explicit User(const QHostAddress &ip, const QString &name, QObject *parent = 0);
+    User(const User& user);
     enum Status {
         OffLine,
         OnLine,
@@ -40,7 +42,7 @@ public:
     QIcon getIcon();
     QDateTime getLogTime();
     QString getInfo();
-    int getStatus();
+    Status getStatus();
 
     void setUuid(const QUuid &uuid);
     void setIp(const QHostAddress &ip);
@@ -48,8 +50,9 @@ public:
     void setIcon(const QIcon &icon);
     void setLogTime(const QDateTime &logTime);
     void setInfo(const QString &info);
-    void setStatus(int status);
+    void setStatus(Status status);
 
+    User &operator=(const User &user);
 signals:
 
 public slots:
@@ -60,7 +63,7 @@ private:
     QIcon icon;
     QDateTime logTime;
     QString info;
-    int status;
+    Status status;
 };
 
 #endif // FRIEND_H

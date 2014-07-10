@@ -8,7 +8,8 @@
 #include <QTextCodec>
 #include <QHostInfo>
 #include <QNetworkInterface>
-#include "ChatUDPSocket.h"
+#include "service/ChatService.h"
+#include "model/User.h"
 
 bool setSkin(QApplication* const app, QString const &skinFile)
 {
@@ -43,17 +44,18 @@ bool setSkin(QApplication* const app, QString const &skinFile)
     return true;
 }
 
-quint16 ChatPort = 0514;
+quint16 ChatPort = 9514;
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-
+//    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 //    MainWindow w;
 //    w.show();
 
-    ChatForm c;
+    User Receiver(QHostAddress("127.0.0.1"), QString("vell002"));
+    ChatForm c(Receiver);
     c.show();
 
 //    setSkin(&a ,":/skins/defaultSkin.css");

@@ -15,15 +15,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
         MainWindow.cpp \
     ChatForm.cpp \
-    ChatUDPSocket.cpp \
     model/ChatMessage.cpp \
-    model/Friend.cpp
+    model/FriendSet.cpp \
+    service/ChatService.cpp \
+    service/BroadcastService.cpp \
+    util/SettingUtil.cpp \
+    model/User.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
-    ChatUDPSocket.h \
     model/ChatMessage.h \
-    model/Friend.h
+    model/FriendSet.h \
+    service/ChatService.h \
+    service/BroadcastService.h \
+    util/SettingUtil.h \
+    model/User.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui

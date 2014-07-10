@@ -41,7 +41,7 @@ void MainWindow::openChatForm(QModelIndex index){
     qDebug() << "openChatForm " << index.row();
     qDebug() << ui->contentsTreeWidget->currentItem()->data(1,0).toString();
     if(ui->contentsTreeWidget->currentItem()->childCount() == 0){
-        (new ChatForm())->show();
+//        (new ChatForm())->show();
     }
 }
 

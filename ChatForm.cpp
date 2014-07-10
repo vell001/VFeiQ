@@ -1,21 +1,21 @@
 #include "ChatForm.h"
 #include "ui_ChatForm.h"
 
-ChatForm::ChatForm(QWidget *parent) :
+ChatForm::ChatForm(const User &receiver, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChatForm)
 {
     ui->setupUi(this);
-    mChatUDPSocket = new ChatUDPSocket(this);
-    connect(mChatUDPSocket, SIGNAL(receiveSuccess(QString)), this, SLOT(receiveSuccess(QString)));
-    connect(mChatUDPSocket, SIGNAL(sendError(QString)), this, SLOT(sendError(QString)));
-    connect(mChatUDPSocket, SIGNAL(sendSuccess(QUuid)), this, SLOT(sendSuccess(QUuid)));
+    this->receiver = receiver;
+    this->mChatService = ChatService::getService();
+    connect(mChatService, SIGNAL(receiveSuccess(ChatMessage)), this, SLOT(receiveSuccess(ChatMessage)));
+    connect(mChatService, SIGNAL(sendError(QUuid, QString)), this, SLOT(sendError(QUuid, QString)));
+    connect(mChatService, SIGNAL(sendSuccess(QUuid)), this, SLOT(sendSuccess(QUuid)));
 }
 
 ChatForm::~ChatForm()
 {
     delete ui;
-    delete mChatUDPSocket;
 }
 
 void ChatForm::on_sendButton_clicked()
@@ -24,17 +24,30 @@ void ChatForm::on_sendButton_clicked()
     sendMessage();
 }
 
-void ChatForm::sendError(QString errorMessage){
+void ChatForm::sendError(QUuid messageUuid , QString errorMessage){
 
 }
 
 void ChatForm::sendSuccess(QUuid messageUuid){
-
+    qDebug() << "messageUuid : " << messageUuid.toString();
+    QListWidgetItem *mesItem;
+    for(int i=ui->chatListWidget->count()-1; i>=0; i--) {
+        mesItem = ui->chatListWidget->item(i);
+        qDebug() << mesItem->text();
+        qDebug() << "mesItem : " << mesItem->data(Qt::UserRole).toString();
+        if(messageUuid.toString() == mesItem->data(Qt::UserRole).toString()) {
+            mesItem->setBackgroundColor(QColor("BLUE"));
+            return ;
+        }
+    }
+    qDebug() << "send ok";
 }
 
-void ChatForm::receiveSuccess(QString content){
+void ChatForm::receiveSuccess(ChatMessage message){
     QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
-    mesItem->setText(QString("receive:\r\n").append(content));
+    mesItem->setData(Qt::UserRole, message.getUuid().toString());
+    mesItem->setText(QString("receive:\r\n").append(message.getContent()));
+    ui->chatListWidget->setCurrentItem(mesItem);
 }
 
 void ChatForm::keyPressEvent(QKeyEvent *e){
@@ -50,11 +63,10 @@ void ChatForm::keyPressEvent(QKeyEvent *e){
 }
 
 void ChatForm::sendMessage() {
-    ChatMessage message;
-    message.setContent(ui->messagePlainTextEdit->toPlainText());
-    message.setReceiver(QHostAddress("222.24.75.99"));
-    mChatUDPSocket->send(&message);
+    ChatMessage message(ChatMessage::Request, receiver.getUuid(), ui->messagePlainTextEdit->toPlainText(), this);
+    mChatService->send(message, receiver.getIp());
     QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
-    mesItem->setText(QString("send:\r\n").append(message.getContent()));
+    mesItem->setData(Qt::UserRole, message.getUuid().toString());
+    mesItem->setText(QString("%1:\r\n").arg(SettingUtil::getUtil()->getSender()->getName()).append(message.getContent()));
     ui->messagePlainTextEdit->clear();
 }
