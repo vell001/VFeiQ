@@ -14,10 +14,7 @@ BroadcastService::BroadcastService(quint16 chatPort, QObject *parent) :
 }
 
 void BroadcastService::listen(){
-    connect(mUdpService, SIGNAL(receiveError(QString)), this, SIGNAL(receiveError(QString)));
-    connect(mUdpService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)));
-    connect(mUdpService, SIGNAL(sendError(QUuid,QString)), this, SIGNAL(sendError(QUuid,QString)));
-    connect(mUdpService, SIGNAL(sendSuccess(QUuid)), this, SIGNAL(sendSuccess(QUuid)));
+    connect(mUdpService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SIGNAL(received(QHostAddress,quint16,ChatMessage)));
 }
 
 BroadcastService *BroadcastService::getService(){

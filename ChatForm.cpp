@@ -35,7 +35,7 @@ void ChatForm::sendSuccess(QUuid messageUuid){
         qDebug() << mesItem->text();
         qDebug() << "mesItem : " << mesItem->data(Qt::UserRole).toString();
         if(messageUuid.toString() == mesItem->data(Qt::UserRole).toString()) {
-            mesItem->setBackgroundColor(QColor("BLUE"));
+            mesItem->setBackgroundColor(QColor("#FFF68F"));
             return ;
         }
     }
@@ -45,7 +45,8 @@ void ChatForm::sendSuccess(QUuid messageUuid){
 void ChatForm::receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
     mesItem->setData(Qt::UserRole, message.getUuid().toString());
-    mesItem->setText(QString("receive:\r\n").append(message.getContent()));
+    mesItem->setText(QString("%1:\r\n%2").arg(receiver.getName()).arg(QString(message.getContent())));
+    mesItem->setBackgroundColor(QColor("#F0E68C"));
     ui->chatListWidget->setCurrentItem(mesItem);
     qDebug() << "receiveSuccess: " << senderIp << senderPort;
 }

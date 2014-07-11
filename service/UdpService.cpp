@@ -47,15 +47,5 @@ void UdpService::readyRead (){
 
 //    connect(message, SIGNAL(parseError(QString)), this, SIGNAL(receiveError(QString)));
 
-    if(message.getType() == ChatMessage::Request) { // request message
-        ChatMessage respMes(message.getUuid(), ChatMessage::Response, SettingUtil::getUtil()->getSender()->getUuid(), "accepted");
-        send(respMes, senderIp);
-        emit receiveSuccess(senderIp, senderPort, message);
-    } else if (message.getType() == ChatMessage::Response) { // response message
-        if(message.getContent().trimmed().toLower() == "accepted") {
-            emit sendSuccess(message.getUuid());
-        } else {
-            emit sendError(message.getUuid(), QString("unaccepted"));
-        }
-    }
+    emit received(senderIp, senderPort, message);
 }

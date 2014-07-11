@@ -18,10 +18,7 @@ public:
     void send(ChatMessage &message, const QHostAddress &receiverIp);
 
 signals:
-    void sendError(QUuid messageUuid, QString errorMessage);
-    void sendSuccess(QUuid messageUuid);
-    void receiveError(QString errorMessage);
-    void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:
 private:
     UdpService *mUdpService;

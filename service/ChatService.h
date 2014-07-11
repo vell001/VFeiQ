@@ -27,6 +27,7 @@ signals:
     void receiveError(QString errorMessage);
     void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:
+    void recived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 private:
     UdpService *mUdpService;
     void listen();

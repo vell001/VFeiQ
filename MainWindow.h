@@ -30,13 +30,12 @@ public:
 
 public slots:
     void openChatForm(QModelIndex);
-    void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 
 private:
     Ui::MainWindow *ui;
     BroadcastService *mBroadcastService;
     SettingUtil *mSettingUtil;
-    ChatMessage *myselfMessage;
     QList<User> *mFriends;
     void updateContentsTreeWidget();
 };

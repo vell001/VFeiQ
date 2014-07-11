@@ -47,7 +47,6 @@ QString User::toString(){
             .arg(logTime.toString())
             .arg(info)
             .arg((int)status);
-    qDebug() << userStr;
     return userStr;
 }
 
@@ -83,6 +82,7 @@ int User::findUser(QList<User> &users, QUuid userUuid){
             return i;
         }
     }
+    return -1;
 }
 
 QUuid User::getUuid(){

@@ -15,10 +15,7 @@ ChatService::ChatService(quint16 chatPort, QObject *parent) :
 }
 
 void ChatService::listen(){
-    connect(mUdpService, SIGNAL(receiveError(QString)), this, SIGNAL(receiveError(QString)));
-    connect(mUdpService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)));
-    connect(mUdpService, SIGNAL(sendError(QUuid,QString)), this, SIGNAL(sendError(QUuid,QString)));
-    connect(mUdpService, SIGNAL(sendSuccess(QUuid)), this, SIGNAL(sendSuccess(QUuid)));
+    connect(mUdpService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(recived(QHostAddress,quint16,ChatMessage)));
 }
 
 ChatService *ChatService::getService(){
@@ -32,4 +29,18 @@ ChatService::~ChatService(){
 
 void ChatService::send(ChatMessage &message, const QHostAddress &receiverIp){
     mUdpService->send(message, receiverIp);
+}
+
+void ChatService::recived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
+    if(message.getType() == ChatMessage::Request) { // request message
+        ChatMessage respMes(message.getUuid(), ChatMessage::Response, SettingUtil::getUtil()->getSender()->getUuid(), "accepted");
+        send(respMes, senderIp);
+        emit receiveSuccess(senderIp, senderPort, message);
+    } else if (message.getType() == ChatMessage::Response) { // response message
+        if(message.getContent().trimmed().toLower() == "accepted") {
+            emit sendSuccess(message.getUuid());
+        } else {
+            emit sendError(message.getUuid(), QString("unaccepted"));
+        }
+    }
 }
