@@ -10,6 +10,7 @@
 #include <QNetworkInterface>
 #include "service/ChatService.h"
 #include "model/User.h"
+#include <QList>
 
 bool setSkin(QApplication* const app, QString const &skinFile)
 {
@@ -45,18 +46,26 @@ bool setSkin(QApplication* const app, QString const &skinFile)
 }
 
 quint16 ChatPort = 9514;
-
+QList<User> friends;
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 //    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-//    MainWindow w;
-//    w.show();
 
-    User Receiver(QHostAddress("127.0.0.1"), QString("vell002"));
-    ChatForm c(Receiver);
-    c.show();
+//    User user(QByteArray("{{b36fbd92-de5f-482b-9e5b-2f139a9a09b3},,vell001,,,,0}"));
+//    qDebug() << user.getIcon().isNull();
+//    qDebug() << user.getInfo().isEmpty();
+//    qDebug() << user.getIp().isNull();
+//    qDebug() << user.getLogTime().isNull();
+//    qDebug() << user.getName().isEmpty();
+
+    MainWindow w;
+    w.show();
+
+//    User Receiver(QHostAddress("127.0.0.1"), QString("vell002"));
+//    ChatForm c(Receiver);
+//    c.show();
 
 //    setSkin(&a ,":/skins/defaultSkin.css");
 

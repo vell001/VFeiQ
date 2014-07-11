@@ -22,35 +22,43 @@ ChatMessage::ChatMessage(const QByteArray &mesStr, QObject *parent) :
                 setType(Type(headList[2].toInt()));
                 setSenderUuid(QUuid(headList[3]));
             }
-            content = QString(contentArr);
+            content = contentArr;
         }
     }
 }
 
-ChatMessage::ChatMessage(const QUuid &uuid, Type type, const QUuid &userUuid, const QString &content, QObject *parent) :
-    QObject(parent)
+ChatMessage::ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QByteArray &content, QObject *parent) :
+    QObject(parent),
+    uuid(uuid),
+    senderUuid(senderUuid),
+    content(content)
 {
-    setUuid(uuid);
-    setType(type);
-    setSenderUuid(userUuid);
-    setContent(content);
+    this->type = type;
 }
 
-ChatMessage::ChatMessage(const ChatMessage& cm)
+ChatMessage::ChatMessage(const ChatMessage& cm) :
+    uuid(cm.uuid),
+    senderUuid(cm.senderUuid),
+    content(cm.content)
 {
+    type = cm.type;
+}
+
+ChatMessage &ChatMessage::operator=(const ChatMessage &cm){
     uuid = cm.uuid;
     senderUuid = cm.senderUuid;
     type = cm.type;
     content = cm.content;
+    return *this;
 }
 
-ChatMessage::ChatMessage(Type type, const QUuid &senderUuid, const QString &content, QObject *parent) :
-    QObject(parent)
+ChatMessage::ChatMessage(Type type, const QUuid &senderUuid, const QByteArray &content, QObject *parent) :
+    QObject(parent),
+    senderUuid(senderUuid),
+    content(content)
 {
     setUuid(QUuid::createUuid());
-    setType(type);
-    setSenderUuid(senderUuid);
-    setContent(content);
+    this->type = type;
 }
 
 QString ChatMessage::toString(){
@@ -58,10 +66,10 @@ QString ChatMessage::toString(){
             .arg(uuid.toString())
             .arg((int)type)
             .arg(senderUuid.toString())
-            .arg(content);
+            .arg(QString(content));
 }
 
-QString ChatMessage::getContent(){
+QByteArray ChatMessage::getContent(){
     return content;
 }
 
@@ -75,7 +83,7 @@ ChatMessage::Type ChatMessage::getType(){
     return type;
 }
 
-void ChatMessage::setContent(const QString& content){
+void ChatMessage::setContent(const QByteArray& content){
     this->content = content;
 }
 

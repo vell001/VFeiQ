@@ -1,31 +1,33 @@
-#ifndef BROADCASTSERVICE_H
-#define BROADCASTSERVICE_H
+#ifndef UDPSERVICE_H
+#define UDPSERVICE_H
 
 #include <QObject>
-
-#include "service/UdpService.h"
-#include "model/User.h"
+#include <QUdpSocket>
+#include <QUuid>
+#include <QList>
 #include "model/ChatMessage.h"
+#include "model/User.h"
+#include "util/SettingUtil.h"
 
-class BroadcastService : public QObject
+class UdpService : public QObject
 {
     Q_OBJECT
 public:
-    explicit BroadcastService(QObject *parent = 0);
-    explicit BroadcastService(quint16 chatPort, QObject *parent = 0);
-    static BroadcastService *getService();
-    ~BroadcastService();
+    explicit UdpService(QObject *parent = 0);
+    explicit UdpService(quint16 chatPort, QObject *parent = 0);
+    ~UdpService();
     void send(ChatMessage &message, const QHostAddress &receiverIp);
-
 signals:
     void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
     void receiveError(QString errorMessage);
     void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:
+    void readyRead();
 private:
-    UdpService *mUdpService;
+    QUdpSocket *mUdpSocket;
+    quint16 chatPort;
     void listen();
 };
 
-#endif // BROADCASTUDPSOCKET_H
+#endif // UDPSERVICE_H

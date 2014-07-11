@@ -4,6 +4,7 @@ SettingUtil::SettingUtil(QObject *parent) :
     QObject(parent)
 {
     sender.setName("vell001");
+    sender.setStatus(User::OnLine);
 }
 
 SettingUtil *SettingUtil::getUtil(){

@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     service/ChatService.cpp \
     service/BroadcastService.cpp \
     util/SettingUtil.cpp \
-    model/User.cpp
+    model/User.cpp \
+    service/UdpService.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -29,7 +30,8 @@ HEADERS  += MainWindow.h \
     service/ChatService.h \
     service/BroadcastService.h \
     util/SettingUtil.h \
-    model/User.h
+    model/User.h \
+    service/UdpService.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui

@@ -8,7 +8,7 @@ ChatForm::ChatForm(const User &receiver, QWidget *parent) :
     ui->setupUi(this);
     this->receiver = receiver;
     this->mChatService = ChatService::getService();
-    connect(mChatService, SIGNAL(receiveSuccess(ChatMessage)), this, SLOT(receiveSuccess(ChatMessage)));
+    connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(receiveSuccess(QHostAddress,quint16,ChatMessage)));
     connect(mChatService, SIGNAL(sendError(QUuid, QString)), this, SLOT(sendError(QUuid, QString)));
     connect(mChatService, SIGNAL(sendSuccess(QUuid)), this, SLOT(sendSuccess(QUuid)));
 }
@@ -20,12 +20,11 @@ ChatForm::~ChatForm()
 
 void ChatForm::on_sendButton_clicked()
 {
-    // send message;
     sendMessage();
 }
 
 void ChatForm::sendError(QUuid messageUuid , QString errorMessage){
-
+    qDebug() << "sendError: " << messageUuid.toString() << " : " << errorMessage;
 }
 
 void ChatForm::sendSuccess(QUuid messageUuid){
@@ -43,11 +42,12 @@ void ChatForm::sendSuccess(QUuid messageUuid){
     qDebug() << "send ok";
 }
 
-void ChatForm::receiveSuccess(ChatMessage message){
+void ChatForm::receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
     mesItem->setData(Qt::UserRole, message.getUuid().toString());
     mesItem->setText(QString("receive:\r\n").append(message.getContent()));
     ui->chatListWidget->setCurrentItem(mesItem);
+    qDebug() << "receiveSuccess: " << senderIp << senderPort;
 }
 
 void ChatForm::keyPressEvent(QKeyEvent *e){
@@ -63,7 +63,7 @@ void ChatForm::keyPressEvent(QKeyEvent *e){
 }
 
 void ChatForm::sendMessage() {
-    ChatMessage message(ChatMessage::Request, receiver.getUuid(), ui->messagePlainTextEdit->toPlainText(), this);
+    ChatMessage message(ChatMessage::Request, receiver.getUuid(), ui->messagePlainTextEdit->toPlainText().toUtf8(), this);
     mChatService->send(message, receiver.getIp());
     QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
     mesItem->setData(Qt::UserRole, message.getUuid().toString());

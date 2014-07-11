@@ -8,17 +8,16 @@
 #define CHATSERVICE_H
 
 #include <QObject>
-#include <QUdpSocket>
-#include <QUuid>
-#include <QList>
+
 #include "model/ChatMessage.h"
-#include "model/User.h"
-#include "util/SettingUtil.h"
+#include "service/UdpService.h"
 
 class ChatService : public QObject
 {
     Q_OBJECT
 public:
+    explicit ChatService(QObject *parent = 0);
+    explicit ChatService(quint16 chatPort, QObject *parent = 0);
     static ChatService *getService();
     ~ChatService();
     void send(ChatMessage &message, const QHostAddress &receiverIp);
@@ -26,14 +25,11 @@ signals:
     void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
     void receiveError(QString errorMessage);
-    void receiveSuccess(ChatMessage message);
+    void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:
-    void readyRead ();
 private:
-    QUdpSocket *mUdpSocket;
-    quint16 chatPort;
+    UdpService *mUdpService;
     void listen();
-    explicit ChatService(QObject *parent = 0);
 };
 
-#endif // CHATUDPSOCKET_H
+#endif // CHATSERVICE_H

@@ -10,7 +10,11 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QDebug>
+#include <QList>
 #include "ChatForm.h"
+#include "service/BroadcastService.h"
+#include "util/SettingUtil.h"
+#include "model/User.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,11 +30,15 @@ public:
 
 public slots:
     void openChatForm(QModelIndex);
-
-private slots:
+    void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 
 private:
     Ui::MainWindow *ui;
+    BroadcastService *mBroadcastService;
+    SettingUtil *mSettingUtil;
+    ChatMessage *myselfMessage;
+    QList<User> *mFriends;
+    void updateContentsTreeWidget();
 };
 
 #endif // MAINWINDOW_H

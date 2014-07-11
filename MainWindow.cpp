@@ -7,41 +7,82 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QIcon icon = QIcon(QString(":/images/user_image.png"));
+    mSettingUtil = SettingUtil::getUtil();
 
-    ui->userImage->setIcon(icon);
+    mFriends = new QList<User>;
+    mFriends->push_back(*mSettingUtil->getSender());
+
+    mBroadcastService = BroadcastService::getService();
+    myselfMessage = new ChatMessage(ChatMessage::Request, mSettingUtil->getSender()->getUuid(), mSettingUtil->getSender()->toQByteArray(), this);
+
+    mBroadcastService->send(*myselfMessage, QHostAddress("255.255.255.255"));
+
+    connect(mBroadcastService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(receiveSuccess(QHostAddress,quint16,ChatMessage)));
+
     ui->userImage->setIconSize(QSize(50, 50));
 
     ui->weatherLabel->setText(QString("<img src=\":/images/weather_1.gif\"/>"));
-
     ui->searchLabel->setText(QString("<img src=\":/images/search.png\" width='24' height='24'/>"));
-
     ui->signatureLabel->setText(QString("signatrue"));
-
-    for(int i=0; i<5; i++) {
-        QTreeWidgetItem *item = new QTreeWidgetItem(ui->contentsTreeWidget);
-        item->setText(0,QString("number: %1").arg(i+1));
-        for(int j=0; j<4 && i <3; j++) {
-            QTreeWidgetItem *cItem = new QTreeWidgetItem(item);
-            cItem->setText(0,QString("child"));
-            cItem->setText(1,QString::number(j));
-            cItem->setIcon(0, icon);
-        }
-    }
     ui->contentsTreeWidget->setIconSize(QSize(40, 40));
+
     connect(ui->contentsTreeWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openChatForm(QModelIndex)));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete myselfMessage;
+    delete mFriends;
 }
 
 void MainWindow::openChatForm(QModelIndex index){
     qDebug() << "openChatForm " << index.row();
-    qDebug() << ui->contentsTreeWidget->currentItem()->data(1,0).toString();
     if(ui->contentsTreeWidget->currentItem()->childCount() == 0){
-//        (new ChatForm())->show();
+        QUuid userUuid = QUuid(index.data(Qt::UserRole).toString());
+        int index = User::findUser(*mFriends, userUuid);
+        (new ChatForm((*mFriends)[index]))->show();
+    }
+}
+
+void MainWindow::receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
+    User user(message.getContent());
+
+    if(user.getIcon().isNull()) {
+        user.setIcon(QIcon(QString(":/images/user_image.png")));
+    }
+    if(user.getIp().isNull() || user.getIp() != senderIp) {
+        user.setIp(senderIp);
+    }
+    if(user.getLogTime().isNull() || user.getLogTime().isValid()) {
+        user.setLogTime(QDateTime::currentDateTime());
+    }
+    if(user.getStatus() == User::OffLine) {
+        qDebug() << user.getName() << "下线了";
+    }
+    if(user.getUuid() == mSettingUtil->getSender()->getUuid()) { // 初始化本机
+        *mSettingUtil->getSender() = user;
+        (*mFriends)[0] = user;
+        ui->userImage->setIcon(user.getIcon());
+    } else { // 新好友
+        mFriends->push_back(user);
+    }
+    updateContentsTreeWidget();
+}
+
+void MainWindow::updateContentsTreeWidget(){
+    ui->contentsTreeWidget->clear();
+    for(int i=0; i<1; i++) {
+        QTreeWidgetItem *item = new QTreeWidgetItem(ui->contentsTreeWidget);
+        item->setText(0,QString("defualt"));
+        User *user;
+        for(int j=0; j<mFriends->count(); j++) {
+            user = &(*mFriends)[0];
+            QTreeWidgetItem *cItem = new QTreeWidgetItem(item);
+            cItem->setText(0,QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
+            cItem->setData(0, Qt::UserRole, user->getUuid().toString());
+            cItem->setIcon(0, user->getIcon());
+        }
     }
 }
 

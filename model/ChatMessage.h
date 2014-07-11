@@ -20,9 +20,9 @@ public:
         Request,
         Response
     };
-    explicit ChatMessage(Type type, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
-    explicit ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
-    explicit ChatMessage(const QByteArray &messageStr, QObject *parent = 0);
+    ChatMessage(Type type, const QUuid &senderUuid, const QByteArray &content, QObject *parent = 0);
+    ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QByteArray &content, QObject *parent = 0);
+    ChatMessage(const QByteArray &messageStr, QObject *parent = 0);
     ChatMessage(const ChatMessage &cm);
 
     QString toString();
@@ -30,18 +30,14 @@ public:
     QUuid getUuid();
     QUuid getSenderUuid();
     Type getType();
-    QString getContent();
+    QByteArray getContent();
 
     void setUuid(const QUuid &uuid);
     void setSenderUuid(const QUuid &senderUuid);
     void setType(Type type);
-    void setContent(const QString &content);
+    void setContent(const QByteArray &content);
 
-//    ChatMessage &operator=(const ChatMessage &cm)
-//    {
-//        *this = cm;
-//        return *this;
-//    }
+    ChatMessage &operator=(const ChatMessage &cm);
 signals:
     void parseError(QString errorMessage);
 public slots:
@@ -50,7 +46,7 @@ private:
     QUuid uuid;
     QUuid senderUuid;
     Type type;
-    QString content;
+    QByteArray content;
 };
 
 #endif // CHATMESSAGE_H

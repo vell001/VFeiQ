@@ -33,7 +33,7 @@ private slots:
     void on_sendButton_clicked();
     void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
-    void receiveSuccess(ChatMessage message);
+    void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 
 private:
     Ui::ChatForm *ui;
