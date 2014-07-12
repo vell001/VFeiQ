@@ -7,7 +7,6 @@
 #include <QList>
 #include "model/ChatMessage.h"
 #include "model/User.h"
-#include "util/SettingUtil.h"
 
 class UdpService : public QObject
 {

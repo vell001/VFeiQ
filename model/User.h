@@ -20,7 +20,7 @@ class User : public QObject
 public:
     User(QObject *parent = 0);
     User(const QHostAddress &ip, const QString &name, QObject *parent = 0);
-    User(const QByteArray &userStr, QObject *parent = 0);
+    User(const QString &userStr, QObject *parent = 0);
     User(const User& user);
     enum Status {
         OffLine,
@@ -38,7 +38,6 @@ public:
      */
 
     QString toString();
-    QByteArray toQByteArray();
 
     QUuid getUuid();
     QHostAddress getIp();
@@ -57,7 +56,6 @@ public:
     void setStatus(Status status);
 
     User &operator=(const User &user);
-    static int findUser(QList<User> &users, QUuid userUuid);
 signals:
     void parseError(QString errorMessage);
 public slots:

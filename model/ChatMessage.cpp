@@ -1,6 +1,6 @@
 #include "ChatMessage.h"
 
-ChatMessage::ChatMessage(const QByteArray &mesStr, QObject *parent) :
+ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
     QObject(parent)
 {
     if(!mesStr.startsWith("HEAD:") || !mesStr.endsWith(";")){
@@ -10,11 +10,11 @@ ChatMessage::ChatMessage(const QByteArray &mesStr, QObject *parent) :
         if(splitIndex == -1 || splitIndex == mesStr.size()-1){
             emit parseError("Incomplete message structure");
         } else {
-            QByteArray head = mesStr.left(splitIndex);
-            QByteArray contentArr = mesStr.right(mesStr.size() - splitIndex - 1);
+            QString head = mesStr.left(splitIndex);
+            QString contentArr = mesStr.right(mesStr.size() - splitIndex - 1);
             contentArr = contentArr.left(contentArr.size()-1);
 
-            QList<QByteArray> headList = head.split(':');
+            QStringList headList = head.split(':');
             if(headList.size() != 4) {
                 emit parseError("Incomplete head structure");
             } else {
@@ -27,7 +27,7 @@ ChatMessage::ChatMessage(const QByteArray &mesStr, QObject *parent) :
     }
 }
 
-ChatMessage::ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QByteArray &content, QObject *parent) :
+ChatMessage::ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QString &content, QObject *parent) :
     QObject(parent),
     uuid(uuid),
     senderUuid(senderUuid),
@@ -52,7 +52,7 @@ ChatMessage &ChatMessage::operator=(const ChatMessage &cm){
     return *this;
 }
 
-ChatMessage::ChatMessage(Type type, const QUuid &senderUuid, const QByteArray &content, QObject *parent) :
+ChatMessage::ChatMessage(Type type, const QUuid &senderUuid, const QString &content, QObject *parent) :
     QObject(parent),
     senderUuid(senderUuid),
     content(content)
@@ -66,10 +66,10 @@ QString ChatMessage::toString(){
             .arg(uuid.toString())
             .arg((int)type)
             .arg(senderUuid.toString())
-            .arg(QString(content));
+            .arg(content);
 }
 
-QByteArray ChatMessage::getContent(){
+QString ChatMessage::getContent(){
     return content;
 }
 
@@ -83,7 +83,7 @@ ChatMessage::Type ChatMessage::getType(){
     return type;
 }
 
-void ChatMessage::setContent(const QByteArray& content){
+void ChatMessage::setContent(const QString& content){
     this->content = content;
 }
 

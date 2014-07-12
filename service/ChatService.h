@@ -11,6 +11,7 @@
 
 #include "model/ChatMessage.h"
 #include "service/UdpService.h"
+#include "service/UserService.h"
 
 class ChatService : public QObject
 {
@@ -30,6 +31,7 @@ public slots:
     void recived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 private:
     UdpService *mUdpService;
+    User *sender;
     void listen();
 };
 

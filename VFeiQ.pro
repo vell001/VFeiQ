@@ -19,9 +19,10 @@ SOURCES += main.cpp\
     model/FriendSet.cpp \
     service/ChatService.cpp \
     service/BroadcastService.cpp \
-    util/SettingUtil.cpp \
     model/User.cpp \
-    service/UdpService.cpp
+    service/UdpService.cpp \
+    service/UserService.cpp \
+    model/ChatRcord.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -29,9 +30,10 @@ HEADERS  += MainWindow.h \
     model/FriendSet.h \
     service/ChatService.h \
     service/BroadcastService.h \
-    util/SettingUtil.h \
     model/User.h \
-    service/UdpService.h
+    service/UdpService.h \
+    service/UserService.h \
+    model/ChatRcord.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui

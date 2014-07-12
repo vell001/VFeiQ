@@ -25,9 +25,7 @@ UdpService::~UdpService(){
 }
 
 void UdpService::send(ChatMessage &message, const QHostAddress &receiverIp){
-    QByteArray data;
-    data.append(message.toString());
-    mUdpSocket->writeDatagram(data, receiverIp, chatPort);
+    mUdpSocket->writeDatagram(message.toString().toUtf8(), receiverIp, chatPort);
     mUdpSocket->flush();
 }
 
@@ -43,7 +41,8 @@ void UdpService::readyRead (){
     qDebug() << "message port : " << senderPort;
     qDebug() << "message : " << buffer;
 
-    ChatMessage message(buffer);
+    qDebug() << "";
+    ChatMessage message(QString::fromUtf8(buffer));
 
 //    connect(message, SIGNAL(parseError(QString)), this, SIGNAL(receiveError(QString)));
 

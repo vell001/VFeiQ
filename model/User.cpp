@@ -14,23 +14,23 @@ User::User(const QHostAddress &ip, const QString &name, QObject *parent) :
     this->uuid = QUuid::createUuid();
 }
 
-User::User(const QByteArray &userStr, QObject *parent) :
+User::User(const QString &userStr, QObject *parent) :
     QObject(parent)
 {
     if(userStr.startsWith('{') && userStr.endsWith('}')) {
-        QByteArray content = userStr.mid(1, userStr.size()-2);
-        QList<QByteArray> cList = content.split(',');
+        QString content = userStr.mid(1, userStr.size()-2);
+        QStringList cList = content.split(',');
         if(cList.size() != 7) {
             emit parseError("Incomplete structure");
             return ;
         }
 
         uuid = QUuid(cList[0]);
-        ip = QHostAddress(QString(cList[1]));
-        name = QString(cList[2]);
-        icon = QIcon(QString(cList[3]));
-        logTime = QDateTime::fromString(QString(cList[4]));
-        info = QString(cList[5]);
+        ip = QHostAddress(cList[1]);
+        name = cList[2];
+        icon = QIcon(cList[3]);
+        logTime = QDateTime::fromString(cList[4]);
+        info = cList[5];
         status = (Status)cList[6].toInt();
     } else {
         emit parseError("Incomplete message");
@@ -48,10 +48,6 @@ QString User::toString(){
             .arg(info)
             .arg((int)status);
     return userStr;
-}
-
-QByteArray User::toQByteArray(){
-    return toString().toUtf8();
 }
 
 User::User(const User &user){
@@ -74,15 +70,6 @@ User &User::operator=(const User &user)
     info = user.info;
     status = user.status;
     return *this;
-}
-
-int User::findUser(QList<User> &users, QUuid userUuid){
-    for(int i=0; i<users.count(); i++) {
-        if(users[i].getUuid() == userUuid) {
-            return i;
-        }
-    }
-    return -1;
 }
 
 QUuid User::getUuid(){

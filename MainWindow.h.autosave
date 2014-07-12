@@ -20,6 +20,7 @@
 #include "service/UserService.h"
 #include "model/User.h"
 #include "ChatForm.h"
+#include "model/ChatRcord.h"
 
 namespace Ui {
 class MainWindow;
@@ -54,6 +55,7 @@ private:
 
     QHash<QUuid, User> *mFriends;
     QHash<QUuid, ChatForm *> *mChatForms;
+    QList<ChatRcord> *ChatRcords;
 
     /* system tray */
     void createActions();
