@@ -10,7 +10,7 @@
 
 #include <QObject>
 #include <QUuid>
-#include <QUuid>
+#include <QIcon>
 #include <QDateTime>
 #include <QHostAddress>
 #include <QtXml>
@@ -44,7 +44,7 @@ public:
     QUuid getUuid();
     QHostAddress getIp();
     QString getName();
-    QUuid getIcon();
+    QIcon getIconUuid();
     QDateTime getLogTime();
     QString getInfo();
     Status getStatus();
@@ -52,7 +52,7 @@ public:
     void setUuid(const QUuid &uuid);
     void setIp(const QHostAddress &ip);
     void setName(const QString &name);
-    void setIcon(const QIcon &iconUuid);
+    void setIconUuid(const QIcon &iconUuid);
     void setLogTime(const QDateTime &logTime);
     void setInfo(const QString &info);
     void setStatus(Status status);
@@ -65,7 +65,7 @@ private:
     QUuid uuid;
     QHostAddress ip;
     QString name;
-    QUuid iconUuid;
+    QIcon iconUuid;
     QDateTime logTime;
     QString info;
     Status status;

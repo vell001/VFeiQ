@@ -40,8 +40,8 @@ void UdpService::readyRead (){
     qDebug() << "message from : " << senderIp.toString();
     qDebug() << "message port : " << senderPort;
     qDebug() << "message : " << buffer;
-
     qDebug() << "";
+
     ChatMessage message(QString::fromUtf8(buffer));
 
 //    connect(message, SIGNAL(parseError(QString)), this, SIGNAL(receiveError(QString)));

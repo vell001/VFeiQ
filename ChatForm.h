@@ -13,6 +13,7 @@
 #include <QKeyEvent>
 #include <model/User.h>
 #include <QList>
+#include "service/ChatRecordService.h"
 
 namespace Ui {
 class ChatForm;
@@ -24,17 +25,20 @@ class ChatForm : public QWidget
 
 public:
     explicit ChatForm(User *receiver, QWidget *parent = 0);
-    explicit ChatForm(User *receiver, QList<ChatMessage> *messages, QWidget *parent = 0);
     ~ChatForm();
 
 protected:
     void keyPressEvent(QKeyEvent *e);
+    virtual void closeEvent ( QCloseEvent * event );
 private slots:
     void on_sendButton_clicked();
     void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
     void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void on_closeButton_clicked();
 
+signals:
+    void closed(QUuid receiverUuid);
 private:
     Ui::ChatForm *ui;
     ChatService *mChatService;
@@ -42,6 +46,7 @@ private:
     User *receiver;
     void sendMessage();
 
+    QList<ChatRecord *> mChatRecords;
     void initForm();
 };
 

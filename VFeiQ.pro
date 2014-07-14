@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     model/User.cpp \
     service/UdpService.cpp \
     service/UserService.cpp \
-    model/ChatRcord.cpp
+    model/ChatRecord.cpp \
+    service/ChatRecordService.cpp \
+    service/IconService.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -33,7 +35,9 @@ HEADERS  += MainWindow.h \
     model/User.h \
     service/UdpService.h \
     service/UserService.h \
-    model/ChatRcord.h
+    model/ChatRecord.h \
+    service/ChatRecordService.h \
+    service/IconService.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui

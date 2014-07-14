@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(codec);
 
     QIcon icon(":/images/default_user_icon.png");
-    qDebug() << icon.name();
+    qDebug() << icon.;
     MainWindow *w = MainWindow::getMainWindow();
     w->show();
 

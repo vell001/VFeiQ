@@ -7,16 +7,22 @@
 #include "ChatMessage.h"
 #include "service/UserService.h"
 
-class ChatRcord : public QObject
+class ChatRecord : public QObject
 {
     Q_OBJECT
 public:
-    explicit ChatRcord(QObject *parent = 0);
-    explicit ChatRcord(ChatMessage message, QObject *parent = 0);
-    explicit ChatRcord(const QUuid &uuid, const QUuid &userUuid, const QString &content, QObject *parent = 0);
+    explicit ChatRecord(QObject *parent = 0);
+    explicit ChatRecord(ChatMessage message, QObject *parent = 0);
+    explicit ChatRecord(const QUuid &uuid, const QUuid &userUuid, const QString &content, QObject *parent = 0);
+    ChatRecord(const ChatRecord &cr);
+    ChatRecord &operator=(const ChatRecord &cr);
     enum SendOrReceive {
         Send,
         Receive
+    };
+    enum IsRead {
+        Readed,
+        NotRead
     };
 
     QUuid getUuid();
@@ -24,12 +30,14 @@ public:
     QDateTime getTime();
     QString getContent();
     SendOrReceive getSendOrReceive();
+    IsRead getIsRead();
 
     void setUuid(QUuid uuid);
     void setUserUuid(QUuid userUuid);
     void setTime(QDateTime time);
     void setContent(QString content);
     void setSendOrReceive(SendOrReceive sendOrReceive);
+    void setIsRead(IsRead isRead);
 
 signals:
 
@@ -41,6 +49,7 @@ private:
     QDateTime time;
     QString content;
     SendOrReceive sendOrReceive;
+    IsRead isRead;
 
     User *myself;
     void initSendOrReceive();

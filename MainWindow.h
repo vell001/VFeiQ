@@ -20,6 +20,9 @@
 #include "service/UserService.h"
 #include "model/User.h"
 #include "ChatForm.h"
+#include "model/ChatRecord.h"
+#include "service/ChatRecordService.h"
+#include "util/GlobalUtil.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,7 +40,7 @@ public:
     QHash<QUuid, ChatForm *> *getChatForms();
 
 public slots:
-    void openChatForm(QModelIndex);
+    void doubleClickedContents(QModelIndex);
     void broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 
@@ -45,15 +48,18 @@ protected:
     virtual void closeEvent ( QCloseEvent * event );
 private slots:
     void activated ( QSystemTrayIcon::ActivationReason reason );
+    void chatFormClosed(QUuid);
 private:
     Ui::MainWindow *ui;
     BroadcastService *mBroadcastService;
     ChatService *mChatService;
     User *myself;
     void updateContentsTreeWidget();
+    void openChatForm(const QUuid &receiverUuid);
 
     QHash<QUuid, User> *mFriends;
     QHash<QUuid, ChatForm *> *mChatForms;
+    QList<ChatRecord> *mChatRecords;
 
     /* system tray */
     void createActions();
@@ -64,6 +70,8 @@ private:
     QAction *maximizeAction;
     QAction *restoreAction;
     QAction *quitAction;
+
+    GlobalUtil *mGlobalUtil;
 };
 
 #endif // MAINWINDOW_H

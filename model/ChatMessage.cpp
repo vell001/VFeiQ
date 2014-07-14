@@ -3,6 +3,21 @@
 ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
     QObject(parent)
 {
+    QDomDocument messageDoc;
+    QString errorMsg;
+    messageDoc.setContent(mesStr, &errorMsg);
+    if(!errorMsg.isEmpty()) {
+        emit parseError(errorMsg);
+    }
+    QDomElement msgE = messageDoc.firstChildElement();
+    QDomElement headE = msgE.elementsByTagName("HEAD").at(0).toElement();
+    QDomElement contentE = msgE.elementsByTagName("content").at(0).toElement();
+
+    uuid = QUuid(headE.attribute("id"));
+    type = Type(headE.attribute("type").toInt());
+    senderUuid = QUuid(headE.attribute("senderUuid"));
+    content = contentE.text();
+/*
     if(!mesStr.startsWith("HEAD:") || !mesStr.endsWith(";")){
         emit parseError("Incomplete message");
     } else {
@@ -24,7 +39,7 @@ ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
             }
             content = contentArr;
         }
-    }
+    }*/
 }
 
 ChatMessage::ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QString &content, QObject *parent) :
@@ -62,11 +77,22 @@ ChatMessage::ChatMessage(Type type, const QUuid &senderUuid, const QString &cont
 }
 
 QString ChatMessage::toString(){
-    return QString("HEAD:%1:%2:%3;%4;")
-            .arg(uuid.toString())
-            .arg((int)type)
-            .arg(senderUuid.toString())
-            .arg(content);
+    QDomDocument messageDoc;
+    QDomElement msgE = messageDoc.createElement("message");
+    QDomElement headE = messageDoc.createElement("HEAD");
+    QDomElement contentE = messageDoc.createElement("content");
+    QDomText contentT = messageDoc.createTextNode(content);
+
+    headE.setAttribute("id", uuid.toString());
+    headE.setAttribute("type", (int)type);
+    headE.setAttribute("senderUuid", senderUuid.toString());
+
+    messageDoc.appendChild(msgE);
+    msgE.appendChild(headE);
+    msgE.appendChild(contentE);
+    contentE.appendChild(contentT);
+
+    return messageDoc.toString(-1);
 }
 
 QString ChatMessage::getContent(){

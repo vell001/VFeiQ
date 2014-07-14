@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* view */
     ui->userImage->setIconSize(QSize(50, 50));
-    ui->userImage->setIcon(myself->getIcon());
+    ui->userImage->setIcon(myself->getIconUuid());
     ui->weatherLabel->setText(QString("<img src=\":/images/weather_1.gif\"/>"));
     ui->searchLabel->setText(QString("<img src=\":/images/search.png\" width='24' height='24'/>"));
     ui->signatureLabel->setText(myself->getInfo());
@@ -84,8 +84,8 @@ void MainWindow::openChatForm(const QUuid &receiverUuid){
 void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     User user(message.getContent());
 
-    if(user.getIcon().isNull()) {
-        user.setIcon(mGlobalUtil->getIconByName());
+    if(user.getIconUuid().isNull()) {
+        user.setIconUuid(mGlobalUtil->getIconByName());
     }
     if(user.getIp().isNull() || user.getIp() != senderIp) {
         user.setIp(senderIp);
@@ -120,7 +120,7 @@ void MainWindow::updateContentsTreeWidget(){
             QTreeWidgetItem *cItem = new QTreeWidgetItem(ui->contentsTreeWidget);
             cItem->setText(0,QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
             cItem->setData(0, Qt::UserRole, user->getUuid().toString());
-            cItem->setIcon(0, user->getIcon());
+            cItem->setIcon(0, user->getIconUuid());
 
             switch (user->getStatus()) {
             case User::OffLine:

@@ -12,6 +12,7 @@
 #include <QHostAddress>
 #include <QString>
 #include <QStringList>
+#include <QtXml>
 
 class ChatMessage : public QObject
 {
