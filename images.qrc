@@ -8,5 +8,18 @@
         <file>images/logo.png</file>
         <file>images/settings.png</file>
         <file>images/reminders alt.png</file>
+        <file>images/mainwindow_bg.png</file>
+        <file>images/chat_topwidget.png</file>
+        <file>images/chatrecord.png</file>
+        <file>images/faces.png</file>
+        <file>images/file_share.png</file>
+        <file>images/folder_documents.png</file>
+        <file>images/font.png</file>
+        <file>images/picture.png</file>
+        <file>images/scrawl.png</file>
+        <file>images/screenshots.png</file>
+        <file>images/shake.png</file>
+        <file>images/video.png</file>
+        <file>images/voice.png</file>
     </qresource>
 </RCC>

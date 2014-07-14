@@ -21,6 +21,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
 
 void ChatForm::initForm(){
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
     this->mChatService = ChatService::getService();
 
     ui->userIcon->setIcon(mIconService->getIconByUuid(this->receiver->getIconUuid()));
@@ -30,6 +31,10 @@ void ChatForm::initForm(){
     ui->signatrueLabel->setText(this->receiver->getInfo());
 
     ui->chatListWidget->setIconSize(QSize(40,40));
+
+//    setStyleSheet("#ChatForm { border-image:url(:/images/mainwindow_bg.png)}");
+//    ui->topWidget->setStyleSheet("#topWidget { border-image:url(:/images/chat_topwidget.png)}");
+    setStyleSheet("#ChatForm {background-color:#ffdbf8}");
 
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(receiveSuccess(QHostAddress,quint16,ChatMessage)));
     connect(mChatService, SIGNAL(sendError(QUuid, QString)), this, SLOT(sendError(QUuid, QString)));

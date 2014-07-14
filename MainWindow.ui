@@ -35,13 +35,13 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>110</height>
+        <height>90</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>100</height>
+        <height>90</height>
        </size>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -129,6 +129,21 @@
                  </item>
                  <item>
                   <property name="text">
+                   <string>离开</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>忙碌</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>隐身</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>离线</string>
                   </property>
                  </item>
@@ -185,13 +200,6 @@
             </widget>
            </item>
           </layout>
-         </item>
-         <item>
-          <widget class="QLabel" name="onlineNumberLabel">
-           <property name="text">
-            <string>online</string>
-           </property>
-          </widget>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">

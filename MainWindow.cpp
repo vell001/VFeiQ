@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mBroadcastService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(broadcastReceived(QHostAddress,quint16,ChatMessage)));
 
     /* view */
+    ui->userNameLabel->setText(myself->getName());
     ui->userImage->setIconSize(QSize(50, 50));
     ui->userImage->setIcon(mIconService->getIconByUuid(myself->getIconUuid()));
     ui->weatherLabel->setText(QString("<img src=\":/images/weather_1.gif\"/>"));
@@ -33,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->signatureLabel->setText(myself->getInfo());
     ui->contentsTreeWidget->setIconSize(QSize(40, 40));
     connect(ui->contentsTreeWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleClickedContents(QModelIndex)));
-
+    setStyleSheet("MainWindow { border-image:url(:/images/mainwindow_bg.png);}");
+//    setStyleSheet("background-color:#FFFAF0");
     /* system tray */
     setWindowIcon(logoIcon);
     trayIcon = new QSystemTrayIcon(this);
@@ -90,12 +92,14 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
     if(user.getLogTime().isNull() || user.getLogTime().isValid()) {
         user.setLogTime(QDateTime::currentDateTime());
     }
-    if(user.getStatus() == User::OffLine) {
-        MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
-        mMessageDialog->show();
-    } else {
-        MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
-        mMessageDialog->show();
+    if(user.getUuid() != myself->getUuid()) {
+        if(user.getStatus() == User::OffLine) {
+            MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
+            mMessageDialog->show();
+        } else {
+            MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
+            mMessageDialog->show();
+        }
     }
 
     (*mFriends)[message.getSenderUuid()] = user;
@@ -111,18 +115,22 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
 
 void MainWindow::updateContentsTreeWidget(){
     ui->contentsTreeWidget->clear();
-    for(int i=0; i<1; i++) {
+//    for(int i=0; i<1; i++) {
+        User *user;
+        QHash<QUuid, User>::iterator it;
         QTreeWidgetItem *item = new QTreeWidgetItem(ui->contentsTreeWidget);
         item->setExpanded(true); // Expand items
         item->setText(0,QString("defualt"));
-        User *user;
-        QHash<QUuid, User>::iterator it;
+
         for(it = mFriends->begin(); it != mFriends->end(); it++) {
             user = &it.value();
             QTreeWidgetItem *cItem = new QTreeWidgetItem(item);
             cItem->setText(0,QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
             cItem->setData(0, Qt::UserRole, user->getUuid().toString());
             cItem->setIcon(0, mIconService->getIconByUuid(user->getIconUuid()));
+            if(it.key() == myself->getUuid()) {
+                cItem->setBackgroundColor(0, QColor("#FFEBCD"));
+            }
 
             switch (user->getStatus()) {
             case User::OffLine:
@@ -132,7 +140,7 @@ void MainWindow::updateContentsTreeWidget(){
                 break;
             }
         }
-    }
+//    }
 }
 
 void MainWindow::chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
