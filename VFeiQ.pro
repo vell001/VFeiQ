@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     service/UserService.cpp \
     model/ChatRecord.cpp \
     service/ChatRecordService.cpp \
-    service/IconService.cpp
+    service/IconService.cpp \
+    MessageDialog.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -37,10 +38,12 @@ HEADERS  += MainWindow.h \
     service/UserService.h \
     model/ChatRecord.h \
     service/ChatRecordService.h \
-    service/IconService.h
+    service/IconService.h \
+    MessageDialog.h
 
 FORMS    += MainWindow.ui \
-    ChatForm.ui
+    ChatForm.ui \
+    MessageDialog.ui
 
 RESOURCES += \
     skins.qrc \

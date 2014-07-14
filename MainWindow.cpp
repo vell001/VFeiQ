@@ -4,11 +4,12 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mGlobalUtil(GlobalUtil::getUtil()),
+    mIconService(IconService::getService()),
     myself(UserService::getService()->getMyself()),
     mFriends(UserService::getService()->getFriends()),
     mChatRecords(ChatRecordService::getService()->getChatRecords()),
-    mChatForms(new QHash<QUuid, ChatForm *>)
+    mChatForms(new QHash<QUuid, ChatForm *>),
+    logoIcon(":/images/logo.png")
 {
     ui->setupUi(this);
 
@@ -26,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* view */
     ui->userImage->setIconSize(QSize(50, 50));
-    ui->userImage->setIcon(myself->getIcon());
+    ui->userImage->setIcon(mIconService->getIconByUuid(myself->getIconUuid()));
     ui->weatherLabel->setText(QString("<img src=\":/images/weather_1.gif\"/>"));
     ui->searchLabel->setText(QString("<img src=\":/images/search.png\" width='24' height='24'/>"));
     ui->signatureLabel->setText(myself->getInfo());
@@ -34,10 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->contentsTreeWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleClickedContents(QModelIndex)));
 
     /* system tray */
-    QIcon wIcon = QIcon(":/images/logo.png");
-    setWindowIcon(wIcon);
+    setWindowIcon(logoIcon);
     trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(wIcon);
+    trayIcon->setIcon(logoIcon);
     trayIcon->setToolTip("VFeiQ");
     createActions();
     createTrayIcon();
@@ -84,9 +84,6 @@ void MainWindow::openChatForm(const QUuid &receiverUuid){
 void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     User user(message.getContent());
 
-    if(user.getIcon().isNull()) {
-        user.setIcon(mGlobalUtil->getIconByName());
-    }
     if(user.getIp().isNull() || user.getIp() != senderIp) {
         user.setIp(senderIp);
     }
@@ -94,7 +91,11 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
         user.setLogTime(QDateTime::currentDateTime());
     }
     if(user.getStatus() == User::OffLine) {
-        qDebug() << user.getName() << "下线了";
+        MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
+        mMessageDialog->show();
+    } else {
+        MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
+        mMessageDialog->show();
     }
 
     (*mFriends)[message.getSenderUuid()] = user;
@@ -110,17 +111,18 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
 
 void MainWindow::updateContentsTreeWidget(){
     ui->contentsTreeWidget->clear();
-//    for(int i=0; i<1; i++) {
-//        QTreeWidgetItem *item = new QTreeWidgetItem(ui->contentsTreeWidget);
-//        item->setText(0,QString("defualt"));
+    for(int i=0; i<1; i++) {
+        QTreeWidgetItem *item = new QTreeWidgetItem(ui->contentsTreeWidget);
+        item->setExpanded(true); // Expand items
+        item->setText(0,QString("defualt"));
         User *user;
         QHash<QUuid, User>::iterator it;
         for(it = mFriends->begin(); it != mFriends->end(); it++) {
             user = &it.value();
-            QTreeWidgetItem *cItem = new QTreeWidgetItem(ui->contentsTreeWidget);
+            QTreeWidgetItem *cItem = new QTreeWidgetItem(item);
             cItem->setText(0,QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
             cItem->setData(0, Qt::UserRole, user->getUuid().toString());
-            cItem->setIcon(0, user->getIcon());
+            cItem->setIcon(0, mIconService->getIconByUuid(user->getIconUuid()));
 
             switch (user->getStatus()) {
             case User::OffLine:
@@ -130,12 +132,24 @@ void MainWindow::updateContentsTreeWidget(){
                 break;
             }
         }
-//    }
+    }
 }
 
 void MainWindow::chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     mChatRecords->append(ChatRecord(message));
-    openChatForm(message.getSenderUuid());
+    if(!mFriends->contains(message.getSenderUuid())) {
+        qDebug() << "no that friend";
+    } else {
+        if(!mChatForms->contains(message.getSenderUuid())){
+            MessageDialog *mMessageDialog = new MessageDialog(tr("新消息提醒！！！"),
+                    QString(tr("%1:\r\n%2")).arg((*mFriends)[message.getSenderUuid()].getName()).arg(message.getContent()),
+                    mIconService->getIconByUuid((*mFriends)[message.getSenderUuid()].getIconUuid()),
+                    10000,
+                    message.getSenderUuid());
+            mMessageDialog->show();
+            connect(mMessageDialog, SIGNAL(accepted(QUuid)), this, SLOT(openChatForm(QUuid)));
+        }
+    }
 }
 
 void MainWindow::activated ( QSystemTrayIcon::ActivationReason reason ){
@@ -146,6 +160,7 @@ void MainWindow::activated ( QSystemTrayIcon::ActivationReason reason ){
         break;
     case QSystemTrayIcon::DoubleClick:
         qDebug("鼠标双击！");
+        showNormal();
         break;
     case QSystemTrayIcon::MiddleClick:
         qDebug("鼠标中键！");

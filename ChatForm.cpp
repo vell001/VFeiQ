@@ -14,7 +14,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
         mesItem->setData(Qt::UserRole, record->getUuid().toString());
         mesItem->setText(QString("%1:\r\n%2").arg(receiver->getName()).arg(QString(record->getContent())));
         mesItem->setBackgroundColor(QColor("#F0E68C"));
-        mesItem->setIcon(receiver->getIcon());
+        mesItem->setIcon(mIconService->getIconByUuid(receiver->getIconUuid()));
         ui->chatListWidget->setCurrentItem(mesItem);
     }
 }
@@ -23,7 +23,7 @@ void ChatForm::initForm(){
     ui->setupUi(this);
     this->mChatService = ChatService::getService();
 
-    ui->userIcon->setIcon(this->receiver->getIcon());
+    ui->userIcon->setIcon(mIconService->getIconByUuid(this->receiver->getIconUuid()));
     ui->userIcon->setIconSize(QSize(40, 40));
 
     ui->usernameLabel->setText(this->receiver->getName());
@@ -80,7 +80,7 @@ void ChatForm::receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMes
         mesItem->setData(Qt::UserRole, message.getUuid().toString());
         mesItem->setText(QString("%1:\r\n%2").arg(receiver->getName()).arg(QString(message.getContent())));
         mesItem->setBackgroundColor(QColor("#F0E68C"));
-        mesItem->setIcon(receiver->getIcon());
+        mesItem->setIcon(mIconService->getIconByUuid(receiver->getIconUuid()));
         ui->chatListWidget->setCurrentItem(mesItem);
         qDebug() << "receiveSuccess: " << senderIp << senderPort;
     }
@@ -104,7 +104,7 @@ void ChatForm::sendMessage() {
     QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
     mesItem->setData(Qt::UserRole, message.getUuid().toString());
     mesItem->setText(QString("%1:\r\n").arg(sender->getName()).append(message.getContent()));
-    mesItem->setIcon(sender->getIcon());
+    mesItem->setIcon(mIconService->getIconByUuid(sender->getIconUuid()));
     ui->chatListWidget->setCurrentItem(mesItem);
     ui->messagePlainTextEdit->clear();
 }

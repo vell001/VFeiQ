@@ -22,7 +22,8 @@
 #include "ChatForm.h"
 #include "model/ChatRecord.h"
 #include "service/ChatRecordService.h"
-#include "util/GlobalUtil.h"
+#include "service/IconService.h"
+#include "MessageDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -49,13 +50,15 @@ protected:
 private slots:
     void activated ( QSystemTrayIcon::ActivationReason reason );
     void chatFormClosed(QUuid);
+    void openChatForm(const QUuid &receiverUuid);
 private:
     Ui::MainWindow *ui;
     BroadcastService *mBroadcastService;
     ChatService *mChatService;
+    IconService *mIconService;
     User *myself;
     void updateContentsTreeWidget();
-    void openChatForm(const QUuid &receiverUuid);
+
 
     QHash<QUuid, User> *mFriends;
     QHash<QUuid, ChatForm *> *mChatForms;
@@ -64,6 +67,7 @@ private:
     /* system tray */
     void createActions();
     void createTrayIcon();
+    QIcon logoIcon;
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     QAction *minimizeAction;
@@ -71,7 +75,6 @@ private:
     QAction *restoreAction;
     QAction *quitAction;
 
-    GlobalUtil *mGlobalUtil;
 };
 
 #endif // MAINWINDOW_H

@@ -10,10 +10,10 @@ IconService *IconService::getService(){
     return &service;
 }
 
-QIcon IconService::getIconByUuid(const QUuid &uuid = QUuid()){
+QIcon IconService::getIconByUuid(const QUuid &uuid){
     if(uuid.isNull()) {
         return QIcon(":/images/default_user_icon.png");
     } else {
-
+        return QIcon(":/images/default_user_icon.png"); ////////////
     }
 }

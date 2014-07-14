@@ -1,15 +1,13 @@
 #include "User.h"
 
 User::User(QObject *parent) :
-    QObject(parent),
-    mGlobalUtil(GlobalUtil::getUtil())
+    QObject(parent)
 {
     this->uuid = QUuid::createUuid();
 }
 
 User::User(const QHostAddress &ip, const QString &name, QObject *parent) :
     QObject(parent),
-    mGlobalUtil(GlobalUtil::getUtil()),
     ip(ip),
     name(name)
 {
@@ -17,10 +15,9 @@ User::User(const QHostAddress &ip, const QString &name, QObject *parent) :
 }
 
 User::User(const QString &userStr, QObject *parent) :
-    QObject(parent),
-    mGlobalUtil(GlobalUtil::getUtil())
+    QObject(parent)
 {
-//    <user id="[uuid]" ip="[ip]" name="[name]" icon="[icon]" logTime="[logTime]" info="[info]" status="[status]"/>
+//    <user id="[uuid]" ip="[ip]" name="[name]" iconUuid="[iconUuid]" logTime="[logTime]" info="[info]" status="[status]"/>
     QDomDocument userDoc;
     QString errorMsg;
     userDoc.setContent(userStr, &errorMsg);
@@ -32,7 +29,7 @@ User::User(const QString &userStr, QObject *parent) :
     uuid = QUuid(userE.attribute("id"));
     ip = QHostAddress(userE.attribute("ip"));
     name = userE.attribute("name");
-    icon = mGlobalUtil->getIconByName(userE.attribute("icon"));
+    iconUuid = QUuid(userE.attribute("iconUuid"));
     logTime = QDateTime::fromString(userE.attribute("logTime"));
     info = userE.attribute("info");
     status = (Status) userE.attribute("status").toInt();
@@ -63,7 +60,7 @@ User::User(const User &user)
     uuid = user.uuid;
     ip = user.ip;
     name = user.name;
-    icon = user.icon;
+    iconUuid = user.iconUuid;
     logTime = user.logTime;
     info = user.info;
     status = user.status;
@@ -74,7 +71,7 @@ User &User::operator=(const User &user)
     uuid = user.uuid;
     ip = user.ip;
     name = user.name;
-    icon = user.icon;
+    iconUuid = user.iconUuid;
     logTime = user.logTime;
     info = user.info;
     status = user.status;
@@ -82,13 +79,13 @@ User &User::operator=(const User &user)
 }
 
 QString User::toString(){
-//    <user id="[uuid]" ip="[ip]" name="[name]" icon="[icon]" logTime="[logTime]" info="[info]" status="[status]"/>
+//    <user id="[uuid]" ip="[ip]" name="[name]" iconUuid="[iconUuid]" logTime="[logTime]" info="[info]" status="[status]"/>
     QDomDocument userDoc;
     QDomElement userE = userDoc.createElement("user");
     userE.setAttribute("id", uuid.toString());
     userE.setAttribute("ip", ip.toString());
     userE.setAttribute("name", name);
-    userE.setAttribute("icon", icon.name());
+    userE.setAttribute("iconUuid", iconUuid.toString());
     userE.setAttribute("logTime", logTime.toString());
     userE.setAttribute("info", info);
     userE.setAttribute("status", (int)status);
@@ -119,8 +116,8 @@ QString User::getName(){
     return this->name;
 }
 
-QIcon User::getIcon(){
-    return this->icon;
+QUuid User::getIconUuid(){
+    return this->iconUuid;
 }
 
 QDateTime User::getLogTime(){
@@ -147,8 +144,8 @@ void User::setName(const QString &name){
     this->name = name;
 }
 
-void User::setIcon(const QIcon &icon){
-    this->icon = icon;
+void User::setIconUuid(const QUuid &iconUuid){
+    this->iconUuid = iconUuid;
 }
 
 void User::setLogTime(const QDateTime &logTime){

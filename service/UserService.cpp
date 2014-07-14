@@ -31,7 +31,6 @@ void UserService::loadSettings(){
     setting.beginGroup("userService");
     QVariant myselfV = setting.value("myself");
     if(myselfV.isNull()){
-        myself.setIcon(QIcon(":/images/user_image.png"));
         myself.setName("vell001");
     } else {
         myself = User(myselfV.toString());

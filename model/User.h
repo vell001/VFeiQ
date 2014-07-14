@@ -14,7 +14,7 @@
 #include <QDateTime>
 #include <QHostAddress>
 #include <QtXml>
-#include "util/GlobalUtil.h"
+#include "service/IconService.h"
 
 class User : public QObject
 {
@@ -44,7 +44,7 @@ public:
     QUuid getUuid();
     QHostAddress getIp();
     QString getName();
-    QUuid getIcon();
+    QUuid getIconUuid();
     QDateTime getLogTime();
     QString getInfo();
     Status getStatus();
@@ -52,7 +52,7 @@ public:
     void setUuid(const QUuid &uuid);
     void setIp(const QHostAddress &ip);
     void setName(const QString &name);
-    void setIcon(const QIcon &iconUuid);
+    void setIconUuid(const QUuid &iconUuid);
     void setLogTime(const QDateTime &logTime);
     void setInfo(const QString &info);
     void setStatus(Status status);
@@ -69,8 +69,6 @@ private:
     QDateTime logTime;
     QString info;
     Status status;
-
-    GlobalUtil *mGlobalUtil;
 };
 
 #endif // FRIEND_H

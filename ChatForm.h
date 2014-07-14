@@ -14,6 +14,7 @@
 #include <model/User.h>
 #include <QList>
 #include "service/ChatRecordService.h"
+#include "service/IconService.h"
 
 namespace Ui {
 class ChatForm;
@@ -48,6 +49,8 @@ private:
 
     QList<ChatRecord *> mChatRecords;
     void initForm();
+
+    IconService *mIconService;
 };
 
 #endif // CHATFORM_H
