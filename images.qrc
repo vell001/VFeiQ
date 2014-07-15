@@ -21,5 +21,6 @@
         <file>images/shake.png</file>
         <file>images/video.png</file>
         <file>images/voice.png</file>
+        <file>images/color.png</file>
     </qresource>
 </RCC>

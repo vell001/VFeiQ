@@ -16,6 +16,8 @@ public:
     explicit ChatRecord(const QUuid &uuid, const QUuid &userUuid, const QString &content, QObject *parent = 0);
     ChatRecord(const ChatRecord &cr);
     ChatRecord &operator=(const ChatRecord &cr);
+    bool operator<(const ChatRecord &cr);
+
     enum SendOrReceive {
         Send,
         Receive

@@ -23,7 +23,7 @@ MessageDialog::MessageDialog(const QString & title, const QString & message, con
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(title);
-    ui->messageLabel->setText(message);
+    ui->textBrowser->setHtml(message);
     setWindowIcon(icon);
     connect(&mTimer, SIGNAL(timeout()), this, SLOT(close()));
 }

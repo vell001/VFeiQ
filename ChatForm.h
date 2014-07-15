@@ -13,6 +13,9 @@
 #include <QKeyEvent>
 #include <model/User.h>
 #include <QList>
+#include <QFontDialog>
+#include <QColorDialog>
+#include <QSettings>
 #include "service/ChatRecordService.h"
 #include "service/IconService.h"
 
@@ -38,6 +41,10 @@ private slots:
     void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void on_closeButton_clicked();
 
+    void on_fontButton_clicked();
+
+    void on_colorButton_clicked();
+
 signals:
     void closed(QUuid receiverUuid);
 private:
@@ -49,8 +56,12 @@ private:
 
     QList<ChatRecord *> mChatRecords;
     void initForm();
+    void updateChatRecordView();
 
     IconService *mIconService;
+
+    void loadSetting();
+    void saveSetting();
 };
 
 #endif // CHATFORM_H

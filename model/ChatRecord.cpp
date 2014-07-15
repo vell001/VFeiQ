@@ -55,6 +55,10 @@ ChatRecord &ChatRecord::operator=(const ChatRecord &cr){
     isRead=cr.isRead;
 }
 
+bool ChatRecord::operator<(const ChatRecord &cr){
+    return time < cr.time;
+}
+
 QUuid ChatRecord::getUuid(){
     return uuid;
 }

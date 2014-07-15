@@ -216,6 +216,7 @@ void MainWindow::createActions()
      quitAction = new QAction(tr("退出"), this);
      connect(quitAction, SIGNAL(triggered()), this, SLOT(close()));
 }
+
 void MainWindow::createTrayIcon()
 {
      trayIconMenu = new QMenu(this);
