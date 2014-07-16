@@ -4,19 +4,22 @@ UdpService::UdpService(QObject *parent) :
     QObject(parent),
     chatPort(9514)
 {
-    listen();
+    startListen();
 }
 UdpService::UdpService(quint16 chatPort, QObject *parent) :
     QObject(parent),
     chatPort(chatPort)
 {
-    listen();
+    startListen();
 }
 
-void UdpService::listen(){
+void UdpService::startListen(){
     mUdpSocket = new QUdpSocket(this);
-    mUdpSocket->bind(QHostAddress::Any, chatPort);
-    connect(mUdpSocket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    if(!mUdpSocket->bind(QHostAddress::Any, chatPort)){
+        emit serviceError("UdpSocket bind error");
+    } else {
+        connect(mUdpSocket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    }
 }
 
 UdpService::~UdpService(){

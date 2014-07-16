@@ -4,9 +4,7 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QUuid>
-#include <QList>
 #include "model/ChatMessage.h"
-#include "model/User.h"
 
 class UdpService : public QObject
 {
@@ -18,12 +16,13 @@ public:
     void send(ChatMessage &message, const QHostAddress &receiverIp);
 signals:
     void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void serviceError(QString errorMesssage);
 public slots:
     void readyRead();
 private:
     QUdpSocket *mUdpSocket;
     quint16 chatPort;
-    void listen();
+    void startListen();
 };
 
 #endif // UDPSERVICE_H

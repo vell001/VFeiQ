@@ -45,6 +45,8 @@ private slots:
 
     void on_colorButton_clicked();
 
+    void on_facesButton_clicked();
+
 signals:
     void closed(QUuid receiverUuid);
 private:

@@ -24,8 +24,6 @@ void ChatForm::initForm(){
     ui->usernameLabel->setText(this->receiver->getName());
     ui->signatrueLabel->setText(this->receiver->getInfo());
 
-//    setStyleSheet("#ChatForm { border-image:url(:/images/mainwindow_bg.png)}");
-//    ui->topWidget->setStyleSheet("#topWidget { border-image:url(:/images/chat_topwidget.png)}");
     setStyleSheet("#ChatForm {background-color:#ffdbf8}");
 
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(receiveSuccess(QHostAddress,quint16,ChatMessage)));
@@ -59,14 +57,6 @@ void ChatForm::sendError(QUuid messageUuid , QString errorMessage){
 }
 
 void ChatForm::sendSuccess(QUuid messageUuid){
-//    QListWidgetItem *mesItem;
-//    for(int i=ui->chatListWidget->count()-1; i>=0; i--) {
-//        mesItem = ui->chatListWidget->item(i);
-//        if(messageUuid.toString() == mesItem->data(Qt::UserRole).toString()) {
-//            mesItem->setBackgroundColor(QColor("#FFF68F"));
-//            return ;
-//        }
-//    }
     qDebug() << "send ok";
 }
 
@@ -97,11 +87,6 @@ void ChatForm::sendMessage() {
     ChatRecord *record = new ChatRecord(message);
     mChatRecords.append(record);
     updateChatRecordView();
-//    QListWidgetItem *mesItem = new QListWidgetItem(ui->chatListWidget);
-//    mesItem->setData(Qt::UserRole, message.getUuid().toString());
-//    mesItem->setText(QString("%1:\r\n").arg(sender->getName()).append(message.getContent()));
-//    mesItem->setIcon(mIconService->getIconByUuid(sender->getIconUuid()));
-//    ui->chatListWidget->setCurrentItem(mesItem);
     ui->messageTextEdit->clear();
 }
 
@@ -152,6 +137,11 @@ void ChatForm::on_colorButton_clicked()
     QColor textColor = QColorDialog::getColor(ui->messageTextEdit->textColor());
     ui->messageTextEdit->setTextColor(textColor);
     saveSetting();
+}
+
+void ChatForm::on_facesButton_clicked()
+{
+
 }
 
 void ChatForm::loadSetting(){

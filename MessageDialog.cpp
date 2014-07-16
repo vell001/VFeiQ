@@ -9,6 +9,9 @@ MessageDialog::MessageDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
+    Qt::WindowFlags flags = windowFlags();
+    flags |= Qt::WindowStaysOnTopHint;
+    setWindowFlags(flags);
     connect(&mTimer, SIGNAL(timeout()), this, SLOT(close()));
 }
 
@@ -22,6 +25,9 @@ MessageDialog::MessageDialog(const QString & title, const QString & message, con
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
+    Qt::WindowFlags flags = windowFlags();
+    flags |= Qt::WindowStaysOnTopHint;
+    setWindowFlags(flags);
     setWindowTitle(title);
     ui->textBrowser->setHtml(message);
     setWindowIcon(icon);

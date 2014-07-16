@@ -22,5 +22,7 @@
         <file>images/video.png</file>
         <file>images/voice.png</file>
         <file>images/color.png</file>
+        <file>images/cancel.png</file>
+        <file>images/send.png</file>
     </qresource>
 </RCC>

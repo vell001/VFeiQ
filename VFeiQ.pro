@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     model/ChatRecord.cpp \
     service/ChatRecordService.cpp \
     service/IconService.cpp \
-    MessageDialog.cpp
+    MessageDialog.cpp \
+    model/FileSender.cpp \
+    model/FileReceiver.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -39,7 +41,9 @@ HEADERS  += MainWindow.h \
     model/ChatRecord.h \
     service/ChatRecordService.h \
     service/IconService.h \
-    MessageDialog.h
+    MessageDialog.h \
+    model/FileSender.h \
+    model/FileReceiver.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
