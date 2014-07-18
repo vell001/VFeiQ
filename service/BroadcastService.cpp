@@ -21,6 +21,10 @@ BroadcastService *BroadcastService::getService(){
     static BroadcastService mService;
     return &mService;
 }
+BroadcastService *BroadcastService::getService(quint16 chatPort){
+    static BroadcastService mService(chatPort);
+    return &mService;
+}
 
 BroadcastService::~BroadcastService(){
     delete mUdpService;

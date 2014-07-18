@@ -11,6 +11,8 @@
 #include "service/ChatService.h"
 #include "model/User.h"
 #include <QList>
+#include "model/FileSender.h"
+#include "model/FileReceiver.h"
 
 bool setSkin(QApplication* const app, QString const &skinFile)
 {
@@ -45,8 +47,8 @@ bool setSkin(QApplication* const app, QString const &skinFile)
     return true;
 }
 
-quint16 ChatPort = 9514;
-QList<User> friends;
+//quint16 ChatPort = 9514;
+//QList<User> friends;
 
 int main(int argc, char *argv[])
 {
@@ -55,6 +57,24 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(codec);
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);
+
+//    QFile *sendfile;
+//    QFile *receivefile;
+//    FileSender *sender;
+//    FileSender *sender2;
+//    FileReceiver *receiver;
+
+//    sendfile = new QFile("D:/Music/周杰伦-简单爱.mp3");
+//    receivefile = new QFile("D:/周杰伦-简单爱.mp3");
+//    sender = new FileSender(sendfile, QHostAddress::LocalHost, 1234, QUuid("{82f1339f-2197-4ce2-8c42-477069c65de7}"));
+//    sender2 = new FileSender(sendfile, QHostAddress::LocalHost, 1234, QUuid("{82f1339f-2197-4ce2-8c42-477069c65de8}"));
+//    receiver = new FileReceiver(receivefile, QHostAddress::LocalHost, 1234, QUuid("{82f1339f-2197-4ce2-8c42-477069c65de8}"));
+//    receiver->start();
+
+
+//    sender2->send();
+//    sender->send();
+
 
     QIcon icon(":/images/default_user_icon.png");
     qDebug() << icon.name();

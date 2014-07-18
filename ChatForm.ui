@@ -553,7 +553,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="cancelButton">
+           <widget class="QToolButton" name="cancelSendButton">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#55aaff;&quot;&gt;取消发送&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -595,7 +595,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableView" name="tableView">
+         <widget class="QTableView" name="fileTableView">
           <property name="maximumSize">
            <size>
             <width>16777215</width>

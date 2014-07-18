@@ -9,15 +9,27 @@
 
 #include <QWidget>
 #include "service/ChatService.h"
+#include "service/BroadcastService.h"
 #include <QListWidgetItem>
 #include <QKeyEvent>
 #include <model/User.h>
 #include <QList>
 #include <QFontDialog>
 #include <QColorDialog>
+#include <QFileDialog>
 #include <QSettings>
 #include "service/ChatRecordService.h"
 #include "service/IconService.h"
+#include <QStringList>
+#include <QFile>
+#include <QHash>
+#include <QStandardItemModel>
+#include <QProgressBar>
+#include <QMessageBox>
+#include "model/FileSender.h"
+#include "model/FileReceiver.h"
+#include "model/FileMessage.h"
+#include "MessageDialog.h"
 
 namespace Ui {
 class ChatForm;
@@ -39,6 +51,13 @@ private slots:
     void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
     void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+
+    void fileMsgReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+
+    void fileSendEnd(qint64);
+    void fileSendError(QString);
+    void fileSendProgress(qint64,qint64);
+
     void on_closeButton_clicked();
 
     void on_fontButton_clicked();
@@ -46,6 +65,12 @@ private slots:
     void on_colorButton_clicked();
 
     void on_facesButton_clicked();
+
+    void on_choseFileButton_clicked();
+
+    void on_cancelSendButton_clicked();
+
+    void on_sendFileButton_clicked();
 
 signals:
     void closed(QUuid receiverUuid);
@@ -64,6 +89,13 @@ private:
 
     void loadSetting();
     void saveSetting();
+
+    QStandardItemModel *sendFileModel;
+
+    FileSender mFileSender;
+    FileReceiver mFileReceiver;
+    FileMessage mFileMessage;
+    BroadcastService *mFileMsgService;
 };
 
 #endif // CHATFORM_H

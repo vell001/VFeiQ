@@ -36,6 +36,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->contentsTreeWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleClickedContents(QModelIndex)));
     setStyleSheet("MainWindow { border-image:url(:/images/mainwindow_bg.png);}");
 //    setStyleSheet("background-color:#FFFAF0");
+    searchResultWidget = new QListWidget(this);
+    searchResultWidget->setGeometry(20, 100,265, 60);
+    searchResultWidget->setIconSize(QSize(40,40));
+    searchResultWidget->setHidden(true);
+    connect(searchResultWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleClickedSearchResult(QModelIndex)));
+
     /* system tray */
     setWindowIcon(logoIcon);
     trayIcon = new QSystemTrayIcon(this);
@@ -63,6 +69,7 @@ MainWindow::~MainWindow()
     delete restoreAction;
     delete quitAction;
     delete mChatForms;
+    delete searchResultWidget;
 }
 
 void MainWindow::doubleClickedContents(QModelIndex index){
@@ -226,4 +233,37 @@ void MainWindow::createTrayIcon()
      trayIconMenu->addSeparator();
      trayIconMenu->addAction(quitAction);
      trayIcon->setContextMenu(trayIconMenu);
+}
+
+void MainWindow::on_searchEdit_textChanged(const QString &arg1)
+{
+    if(arg1.isEmpty()){
+        searchResultWidget->setHidden(true);
+        return;
+    }
+    QString text = arg1;
+    searchResultWidget->clear();
+    foreach (QUuid key, mFriends->keys()) {
+        User *user = &(*mFriends)[key];
+        if(user->getName().contains(text, Qt::CaseInsensitive)
+                || user->getIp().toString().contains(text, Qt::CaseInsensitive)){
+            QListWidgetItem *item = new QListWidgetItem(searchResultWidget);
+            item->setText(QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
+            item->setData(Qt::UserRole, user->getUuid().toString());
+            item->setIcon(mIconService->getIconByUuid(user->getIconUuid()));
+        }
+    }
+    searchResultWidget->resize(searchResultWidget->geometry().width(),
+                               44*searchResultWidget->count()<ui->contentsTreeWidget->geometry().height() ?
+                                   44*searchResultWidget->count() :
+                                   ui->contentsTreeWidget->geometry().height());
+    searchResultWidget->setHidden(false);
+}
+
+void MainWindow::doubleClickedSearchResult(QModelIndex index){
+    QUuid userUuid = QUuid(index.data(Qt::UserRole).toString());
+    openChatForm(userUuid);
+//    ui->searchEdit->clear();
+    searchResultWidget->clear();
+    searchResultWidget->setHidden(true);
 }

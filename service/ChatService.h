@@ -20,15 +20,17 @@ public:
     explicit ChatService(QObject *parent = 0);
     explicit ChatService(quint16 chatPort, QObject *parent = 0);
     static ChatService *getService();
+    static ChatService *getService(quint16 chatPort);
     ~ChatService();
     void send(ChatMessage &message, const QHostAddress &receiverIp);
 signals:
     void sendError(QUuid messageUuid, QString errorMessage);
     void sendSuccess(QUuid messageUuid);
+    void receivedMessage(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void receiveError(QString errorMessage);
     void receiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:
-    void recived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 private:
     UdpService *mUdpService;
     User *sender;

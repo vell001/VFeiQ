@@ -14,6 +14,7 @@ public:
     explicit BroadcastService(QObject *parent = 0);
     explicit BroadcastService(quint16 chatPort, QObject *parent = 0);
     static BroadcastService *getService();
+    static BroadcastService *getService(quint16 chatPort);
     ~BroadcastService();
     void send(ChatMessage &message, const QHostAddress &receiverIp);
 

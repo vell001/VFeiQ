@@ -15,6 +15,7 @@
 #include <QMenu>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QTableWidget>
 #include "service/BroadcastService.h"
 #include "service/ChatService.h"
 #include "service/UserService.h"
@@ -24,6 +25,9 @@
 #include "service/ChatRecordService.h"
 #include "service/IconService.h"
 #include "MessageDialog.h"
+#include "model/FileReceiver.h"
+#include "model/FileSender.h"
+#include <QFile>
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +55,9 @@ private slots:
     void activated ( QSystemTrayIcon::ActivationReason reason );
     void chatFormClosed(QUuid);
     void openChatForm(const QUuid &receiverUuid);
+    void on_searchEdit_textChanged(const QString &arg1);
+    void doubleClickedSearchResult(QModelIndex);
+
 private:
     Ui::MainWindow *ui;
     BroadcastService *mBroadcastService;
@@ -74,6 +81,8 @@ private:
     QAction *maximizeAction;
     QAction *restoreAction;
     QAction *quitAction;
+
+    QListWidget *searchResultWidget;
 
 };
 
