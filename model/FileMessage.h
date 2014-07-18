@@ -6,6 +6,7 @@
 #include <QUuid>
 #include <QFileInfo>
 #include <QtXml>
+#include <QHash>
 
 class FileMessage : public QObject
 {
@@ -21,6 +22,9 @@ public:
     explicit FileMessage(const QString &infoStr, QObject *parent = 0);
     FileMessage &operator=(const FileMessage &fileMessage);
     QString toString();
+
+    static QHash<QUuid, FileMessage *> parseFileMessages(const QString &messagesStr);
+    static QString fileMessagesToString(const Hash<QUuid, FileMessage *> &fileMessages);
 
     QUuid getUuid();
     QString getFileName();

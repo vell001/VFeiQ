@@ -63,6 +63,31 @@ QString FileMessage::toString(){
     return messageDoc.toString(-1);
 }
 
+QHash<QUuid, FileMessage *> FileMessage::parseFileMessages(const QString &messagesStr){
+    QHash<QUuid, FileMessage *> fileMessages;
+    QDomDocument messageDoc;
+    QString errorMsg;
+    messageDoc.setContent(infoStr, &errorMsg);
+    if(!errorMsg.isEmpty()) {
+        return fileMessages;
+    }
+    QDomElement msgE = messageDoc.firstChildElement();
+
+    foreach (QDomNode file, msgE.childNodes()) {
+        QDomElement fileE = file.toElement();
+//        uuid = QUuid(fileE.attribute("id"));
+//        fileName = fileE.attribute("fileName");
+//        fileFullName = fileE.attribute("fileFullName");
+//        size = fileE.attribute("size").toLongLong();
+//        type = Type(fileE.attribute("type").toInt());
+//        transferPort = fileE.attribute("transferPort").toUInt();
+    }
+}
+
+QString FileMessage::fileMessagesToString(const Hash<QUuid, FileMessage *> &fileMessages){
+
+}
+
 QUuid FileMessage::getUuid(){
     return uuid;
 }

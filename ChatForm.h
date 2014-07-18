@@ -58,6 +58,10 @@ private slots:
     void fileSendError(QString);
     void fileSendProgress(qint64,qint64);
 
+    void fileReceiveEnd(qint64);
+    void fileReceiveError(QString);
+    void fileReceiveProgress(qint64,qint64);
+
     void on_closeButton_clicked();
 
     void on_fontButton_clicked();
@@ -92,10 +96,12 @@ private:
 
     QStandardItemModel *sendFileModel;
 
-    FileSender mFileSender;
-    FileReceiver mFileReceiver;
-    FileMessage mFileMessage;
+    FileSender *mFileSender;
+    FileReceiver *mFileReceiver;
+    FileMessage *mFileMessage;
     BroadcastService *mFileMsgService;
+    int fileSendRow;
+    void clearSendFiles();
 };
 
 #endif // CHATFORM_H
