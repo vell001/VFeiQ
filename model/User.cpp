@@ -33,26 +33,6 @@ User::User(const QString &userStr, QObject *parent) :
     logTime = QDateTime::fromString(userE.attribute("logTime"));
     info = userE.attribute("info");
     status = (Status) userE.attribute("status").toInt();
-    /*
-    if(userStr.startsWith('{') && userStr.endsWith('}')) {
-        QString content = userStr.mid(1, userStr.size()-2);
-        QStringList cList = content.split(',');
-        if(cList.size() != 7) {
-            emit parseError("Incomplete structure");
-            return ;
-        }
-
-        uuid = QUuid(cList[0]);
-        ip = QHostAddress(cList[1]);
-        name = cList[2];
-        icon = QIcon(cList[3]);
-        logTime = QDateTime::fromString(cList[4]);
-        info = cList[5];
-        status = (Status)cList[6].toInt();
-    } else {
-        emit parseError("Incomplete message");
-    }
-    */
 }
 
 User::User(const User &user)
@@ -92,16 +72,6 @@ QString User::toString(){
 
     userDoc.appendChild(userE);
     return userDoc.toString(-1);
-    /*
-    QString userStr = QString("{%1,%2,%3,%4,%5,%6,%7}")
-            .arg(uuid.toString())
-            .arg(ip.toString())
-            .arg(name)
-            .arg(icon.name())
-            .arg(logTime.toString())
-            .arg(info)
-            .arg((int)status);
-    return userStr;*/
 }
 
 QUuid User::getUuid(){

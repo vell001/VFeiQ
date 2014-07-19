@@ -18,13 +18,14 @@ public:
     };
 
     explicit FileMessage(QObject *parent = 0);
-    explicit FileMessage(const QFileInfo &info, quint16 transferPort = 1213, QObject *parent = 0);
+    explicit FileMessage(const QFileInfo &info, const QUuid &uuid = QUuid::createUuid(), quint16 transferPort = 1213, QObject *parent = 0);
     explicit FileMessage(const QString &infoStr, QObject *parent = 0);
     FileMessage &operator=(const FileMessage &fileMessage);
     QString toString();
 
-    static QHash<QUuid, FileMessage *> parseFileMessages(const QString &messagesStr);
-    static QString fileMessagesToString(const Hash<QUuid, FileMessage *> &fileMessages);
+    static QHash<QUuid, FileMessage *> *parseFileMessages(const QString &messagesStr);
+    static QString fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fileMessages);
+    static QString fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fileMessages);
 
     QUuid getUuid();
     QString getFileName();

@@ -16,9 +16,9 @@ FileMessage &FileMessage::operator=(const FileMessage &fileMessage){
     return *this;
 }
 
-FileMessage::FileMessage(const QFileInfo &info, quint16 transferPort, QObject *parent) :
+FileMessage::FileMessage(const QFileInfo &info, const QUuid &uuid, quint16 transferPort, QObject *parent) :
     QObject(parent),
-    uuid(QUuid::createUuid()),
+    uuid(uuid),
     fileName(info.fileName()),
     fileFullName(info.filePath()),
     size(info.size()),
@@ -63,29 +63,79 @@ QString FileMessage::toString(){
     return messageDoc.toString(-1);
 }
 
-QHash<QUuid, FileMessage *> FileMessage::parseFileMessages(const QString &messagesStr){
-    QHash<QUuid, FileMessage *> fileMessages;
+QHash<QUuid, FileMessage *> *FileMessage::parseFileMessages(const QString &messagesStr){
+    QHash<QUuid, FileMessage *> *fileMessages = new QHash<QUuid, FileMessage *>;
     QDomDocument messageDoc;
     QString errorMsg;
-    messageDoc.setContent(infoStr, &errorMsg);
+    messageDoc.setContent(messagesStr, &errorMsg);
     if(!errorMsg.isEmpty()) {
         return fileMessages;
     }
     QDomElement msgE = messageDoc.firstChildElement();
 
-    foreach (QDomNode file, msgE.childNodes()) {
+    FileMessage *fMsg;
+    for(int i=0; i<msgE.childNodes().count(); i++) {
+        QDomNode file = msgE.childNodes().item(i);
+        if(!file.isElement()) continue;
         QDomElement fileE = file.toElement();
-//        uuid = QUuid(fileE.attribute("id"));
-//        fileName = fileE.attribute("fileName");
-//        fileFullName = fileE.attribute("fileFullName");
-//        size = fileE.attribute("size").toLongLong();
-//        type = Type(fileE.attribute("type").toInt());
-//        transferPort = fileE.attribute("transferPort").toUInt();
+        fMsg = new FileMessage();
+
+        fMsg->setUuid(QUuid(fileE.attribute("id")));
+        fMsg->setFileName(fileE.attribute("fileName"));
+        fMsg->setFileFullName(fileE.attribute("fileFullName"));
+        fMsg->setSize(fileE.attribute("size").toLongLong());
+        fMsg->setType(Type(fileE.attribute("type").toInt()));
+        fMsg->setTransferPort(fileE.attribute("transferPort").toUInt());
+        (*fileMessages)[fMsg->getUuid()] = fMsg;
     }
+//    foreach (QDomNode file, msgE.childNodes()) {
+//        if(!file.isElement()) continue;
+//        QDomElement fileE = file.toElement();
+//        fMsg = new FileMessage();
+
+//        fMsg->setUuid(QUuid(fileE.attribute("id")));
+//        fMsg->setFileName(fileE.attribute("fileName"));
+//        fMsg->setFileFullName(fileE.attribute("fileFullName"));
+//        fMsg->setSize(fileE.attribute("size").toLongLong());
+//        fMsg->setType(Type(fileE.attribute("type").toInt()));
+//        fMsg->setTransferPort(fileE.attribute("transferPort").toUInt());
+//        (*fileMessages)[fMsg->getUuid()] = fMsg;
+//    }
+    return fileMessages;
 }
 
-QString FileMessage::fileMessagesToString(const Hash<QUuid, FileMessage *> &fileMessages){
+QString FileMessage::fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fileMessages){
+    QDomDocument messageDoc;
+    QDomElement filesE = messageDoc.createElement("files");
+    messageDoc.appendChild(filesE);
+    foreach (FileMessage *fMsg, fileMessages.values()) {
+        QDomElement msgE = messageDoc.createElement("file");
 
+        msgE.setAttribute("id", fMsg->getUuid().toString());
+        msgE.setAttribute("fileName", fMsg->getFileName());
+        msgE.setAttribute("fileFullName", fMsg->getFileFullName());
+        msgE.setAttribute("size", fMsg->getSize());
+        msgE.setAttribute("type", (int)fMsg->getType());
+        msgE.setAttribute("transferPort", fMsg->getTransferPort());
+        filesE.appendChild(msgE);
+    }
+    return messageDoc.toString(-1);
+}
+
+QString FileMessage::fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fileMessages){
+    QDomDocument messageDoc;
+    QDomElement filesE = messageDoc.createElement("div");
+    filesE.setAttribute("id", "files");
+    messageDoc.appendChild(filesE);
+    foreach (FileMessage *fMsg, fileMessages.values()) {
+        QDomElement msgE = messageDoc.createElement("div");
+
+        msgE.setAttribute("id", fMsg->getUuid().toString());
+        QDomText msgT = messageDoc.createTextNode(fMsg->getFileName());
+        msgE.appendChild(msgT);
+        filesE.appendChild(msgE);
+    }
+    return messageDoc.toString(-1);
 }
 
 QUuid FileMessage::getUuid(){

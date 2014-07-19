@@ -24,5 +24,8 @@
         <file>images/color.png</file>
         <file>images/cancel.png</file>
         <file>images/send.png</file>
+        <file>images/saveFiles.png</file>
+        <file>images/contacts.png</file>
+        <file>images/groups.png</file>
     </qresource>
 </RCC>

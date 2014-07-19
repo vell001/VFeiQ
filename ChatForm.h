@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QHash>
+#include <QPair>
 #include <QStandardItemModel>
 #include <QProgressBar>
 #include <QMessageBox>
@@ -30,6 +31,7 @@
 #include "model/FileReceiver.h"
 #include "model/FileMessage.h"
 #include "MessageDialog.h"
+#include <QDesktopServices>
 
 namespace Ui {
 class ChatForm;
@@ -76,6 +78,12 @@ private slots:
 
     void on_sendFileButton_clicked();
 
+    void on_saveReceiveButton_clicked();
+
+    void on_cancelReceiveButton_clicked();
+
+    void on_chatRecordBrowser_anchorClicked(const QUrl &arg1);
+
 signals:
     void closed(QUuid receiverUuid);
 private:
@@ -95,13 +103,18 @@ private:
     void saveSetting();
 
     QStandardItemModel *sendFileModel;
+    QStandardItemModel *receiveFileModel;
 
     FileSender *mFileSender;
     FileReceiver *mFileReceiver;
     FileMessage *mFileMessage;
     BroadcastService *mFileMsgService;
     int fileSendRow;
+    int fileReceiveRow;
+    QString saveDirName;
+
     void clearSendFiles();
+    void clearReceiveFiles();
 };
 
 #endif // CHATFORM_H

@@ -34,6 +34,21 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_11">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
+     <number>2</number>
+    </property>
     <item>
      <widget class="QWidget" name="topWidget" native="true">
       <property name="minimumSize">
@@ -229,13 +244,41 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <property name="iconSize">
+       <size>
+        <width>24</width>
+        <height>24</height>
+       </size>
+      </property>
       <widget class="QWidget" name="contentsTab">
+       <attribute name="icon">
+        <iconset resource="images.qrc">
+         <normaloff>:/images/contacts.png</normaloff>:/images/contacts.png</iconset>
+       </attribute>
        <attribute name="title">
-        <string>Contents</string>
+        <string/>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QTreeWidget" name="contentsTreeWidget">
+          <property name="autoScrollMargin">
+           <number>16</number>
+          </property>
           <attribute name="headerVisible">
            <bool>false</bool>
           </attribute>
@@ -249,10 +292,29 @@
        </layout>
       </widget>
       <widget class="QWidget" name="groupsTab">
+       <attribute name="icon">
+        <iconset resource="images.qrc">
+         <normaloff>:/images/groups.png</normaloff>:/images/groups.png</iconset>
+       </attribute>
        <attribute name="title">
-        <string>Groups</string>
+        <string/>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
@@ -294,6 +356,21 @@
         <string>RecentContents</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
@@ -453,6 +530,16 @@
     </item>
    </layout>
   </widget>
+  <action name="actionNewFriendSet">
+   <property name="text">
+    <string>新建组</string>
+   </property>
+  </action>
+  <action name="actionDeleteFriendSet">
+   <property name="text">
+    <string>删除组</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

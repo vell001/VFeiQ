@@ -75,7 +75,6 @@ int main(int argc, char *argv[])
 //    sender2->send();
 //    sender->send();
 
-
     QIcon icon(":/images/default_user_icon.png");
     qDebug() << icon.name();
     MainWindow *w = MainWindow::getMainWindow();

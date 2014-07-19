@@ -12,14 +12,24 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     initForm();
     updateChatRecordView();
     loadSetting();
+
     sendFileModel = new QStandardItemModel;
+    receiveFileModel = new QStandardItemModel;
+
     QStringList heads;
     heads << "filename" << "progress" << "size" << "type" << "url" << "uuid";
     sendFileModel->setHorizontalHeaderLabels(heads);
-    ui->fileTableView->setModel(sendFileModel);
+    receiveFileModel->setHorizontalHeaderLabels(heads);
+
+    ui->sendFileTableView->setModel(sendFileModel);
+    ui->receiveFileTableView->setModel(receiveFileModel);
+
     mFileSender = 0;
     mFileReceiver = 0;
     mFileMessage = 0;
+
+    fileSendRow = 0;
+    fileReceiveRow = 0;
 }
 
 void ChatForm::initForm(){
@@ -46,6 +56,8 @@ ChatForm::~ChatForm()
     delete mFileSender;
     delete mFileReceiver;
     delete mFileMessage;
+    delete sendFileModel;
+    delete receiveFileModel;
 //    qDebug() << "ChatForm::~ChatForm()";
     delete ui;
 }
@@ -196,8 +208,7 @@ void ChatForm::on_choseFileButton_clicked()
 
     for(int i=0; i<sendFileModel->rowCount(); i++){
         QModelIndex index = sendFileModel->index(i,1);
-        ui->fileTableView->setIndexWidget(index, new QProgressBar);
-        QProgressBar *bar = (QProgressBar *)ui->fileTableView->indexWidget(index);
+        ui->sendFileTableView->setIndexWidget(index, new QProgressBar);
     }
 }
 
@@ -208,47 +219,50 @@ void ChatForm::on_cancelSendButton_clicked()
 
 void ChatForm::on_sendFileButton_clicked()
 {
-    fileSendRow = -1;
     if(sendFileModel->rowCount() < 1) {
         QMessageBox::warning(this, "send warning", "no file chose to send");
     } else {
-        fileSendEnd(0);
+//        sendFilesMessage
+        QHash<QUuid, FileMessage *> fileMessages;
+        FileMessage *fileMessage;
+        for(int i=0; i<sendFileModel->rowCount(); i++){
+            fileMessage = new FileMessage(QFileInfo(sendFileModel->index(i, 4).data(Qt::DisplayRole).toString()));
+            fileMessages[fileMessage->getUuid()] = fileMessage;
+        }
+        ChatMessage fileMsg(ChatMessage::Request, sender->getUuid(), FileMessage::fileMessagesToXMLStr(fileMessages));
+        mFileMsgService->send(fileMsg, receiver->getIp());
+//        start send file
+//        fileSendEnd(0);
+
+        ChatMessage fileMsgHtml(ChatMessage::Request, sender->getUuid(), "send files: "+FileMessage::fileMessagesToHTMLStr(fileMessages));
+        ChatRecord *record = new ChatRecord(fileMsgHtml);
+        mChatRecords.append(record);
+        updateChatRecordView();
     }
+    fileSendRow = 0;
 }
 
 void ChatForm::fileMsgReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
-    if(message.getType() == ChatMessage::Request){
-        FileMessage fMsg(message.getContent());
-        if(QMessageBox::question(this, "file transfer", "do you want to save those files?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok){
-
-            QString saveFileName = QFileDialog::getSaveFileName(this, fMsg.getFileName());
-            if(saveFileName.isEmpty()){
-                ChatMessage mes(ChatMessage::Response, sender->getUuid(), "unaccepted");
-                mFileMsgService->send(mes, receiver->getIp());
-                return;
-            }
-            delete mFileReceiver;
-            fMsg.setTransferPort(1213);
-            mFileReceiver = new FileReceiver(new QFile(saveFileName),
-                                             QHostAddress::Any,
-                                             fMsg.getTransferPort(),
-                                             fMsg.getUuid());
-            connect(mFileReceiver, SIGNAL(receiveEnd(qint64)), this, SLOT(fileReceiveEnd(qint64)));
-            connect(mFileReceiver, SIGNAL(receiveError(QString)), this, SLOT(fileReceiveError(QString)));
-            connect(mFileReceiver, SIGNAL(receiveProgress(qint64,qint64)), this, SLOT(fileReceiveProgress(qint64,qint64)));
-//            mFileReceiver->setUuid(fMsg.getUuid());
-//            mFileReceiver->setFile(new QFile(saveFileName));
-//            mFileReceiver->setSenderIp(QHostAddress::Any); ////////////////////
-//            mFileReceiver->setReceivePort(fMsg.getTransferPort());
-            mFileReceiver->start();
-
-            ChatMessage mes(ChatMessage::Response, sender->getUuid(), fMsg.toString());
-            mFileMsgService->send(mes, receiver->getIp());
-
-        } else {
-            ChatMessage mes(ChatMessage::Response, sender->getUuid(), "unaccepted");
-            mFileMsgService->send(mes, receiver->getIp());
+    if(message.getType() == ChatMessage::Request){ // someone want to transfer files to you
+        QHash<QUuid, FileMessage *> *fileMessages = FileMessage::parseFileMessages(message.getContent());
+//    heads << "filename" << "progress" << "size" << "type" << "url" << "uuid";
+        /* init receive table */
+        foreach (FileMessage *fileMessage, fileMessages->values()) {
+            QList<QStandardItem *> items;
+            items << new QStandardItem(fileMessage->getFileName())
+                  << new QStandardItem
+                  << new QStandardItem(QString::number(fileMessage->getSize()))
+                  << new QStandardItem(fileMessage->getType() == FileMessage::Dir ? "dir" : "file")
+                  << new QStandardItem(fileMessage->getFileFullName())
+                  << new QStandardItem(fileMessage->getUuid().toString());
+            receiveFileModel->appendRow(items);
         }
+        for(int i=0; i<receiveFileModel->rowCount(); i++){
+            QModelIndex index = receiveFileModel->index(i,1);
+            ui->receiveFileTableView->setIndexWidget(index, new QProgressBar);
+        }
+        fileReceiveRow = 0;
+
     } else if(message.getType() == ChatMessage::Response) {
         if(message.getContent() == "unaccepted") { // 对方拒绝接受
             clearSendFiles();
@@ -256,17 +270,14 @@ void ChatForm::fileMsgReceived(QHostAddress senderIp, quint16 senderPort, ChatMe
             FileMessage fMsg(message.getContent());
 
             delete mFileSender;
-            mFileSender = new FileSender(new QFile(mFileMessage->getFileFullName()),
+            mFileSender = new FileSender(new QFile(fMsg.getFileFullName()),
                                          receiver->getIp(),
                                          fMsg.getTransferPort(),
                                          fMsg.getUuid());
             connect(mFileSender, SIGNAL(sendEnd(qint64)), this, SLOT(fileSendEnd(qint64)));
             connect(mFileSender, SIGNAL(sendError(QString)), this, SLOT(fileSendError(QString)));
             connect(mFileSender, SIGNAL(sendProgress(qint64,qint64)), this, SLOT(fileSendProgress(qint64,qint64)));
-//            mFileSender->setUuid(fMsg.getUuid());
-//            mFileSender->setFile(new QFile(mFileMessage->getFileFullName()));
-//            mFileSender->setReceiverIp(receiver->getIp());
-//            mFileSender->setReceiverPort(fMsg.getTransferPort());
+
             mFileSender->send();
         }
     }
@@ -275,40 +286,122 @@ void ChatForm::fileMsgReceived(QHostAddress senderIp, quint16 senderPort, ChatMe
 void ChatForm::fileSendEnd(qint64 btyes){
     if(fileSendRow+1 < sendFileModel->rowCount()) {
         fileSendRow++;
-        delete mFileMessage;
-        mFileMessage = new FileMessage(QFileInfo(sendFileModel->index(fileSendRow, 4).data(Qt::DisplayRole).toString()));
-        QUuid fUuid(QUuid(sendFileModel->index(fileSendRow, 5).data(Qt::DisplayRole).toString()));
-        ChatMessage fileMsg(fUuid, ChatMessage::Request, sender->getUuid(), mFileMessage->toString());
-        mFileMsgService->send(fileMsg, receiver->getIp());
-    } else {
-        QMessageBox::information(this, "send ok", "send finish");
+    } else { // send over
+//        QMessageBox::information(this, "send ok", "send finish");
         clearSendFiles();
+        ChatMessage msg(ChatMessage::Response, receiver->getUuid(), "send finish");
+        ChatRecord *record = new ChatRecord(msg);
+        mChatRecords.append(record);
+        updateChatRecordView();
     }
 }
 
 void ChatForm::fileSendError(QString errorStr){
      QMessageBox::warning(this, "send error", errorStr);
+     ChatMessage msg(ChatMessage::Response, receiver->getUuid(), "send error: "+errorStr);
+     ChatRecord *record = new ChatRecord(msg);
+     mChatRecords.append(record);
+     updateChatRecordView();
 }
 
 void ChatForm::fileSendProgress(qint64 maximum, qint64 value){
     QModelIndex progressBarIndex = sendFileModel->index(fileSendRow, 1);
-    QProgressBar *bar = (QProgressBar *)ui->fileTableView->indexWidget(progressBarIndex);
+    QProgressBar *bar = (QProgressBar *)ui->sendFileTableView->indexWidget(progressBarIndex);
     bar->setMaximum(maximum);
     bar->setValue(value);
 }
 
 void ChatForm::fileReceiveEnd(qint64 bytes){
+    if(fileReceiveRow+1 < receiveFileModel->rowCount()){
+        fileReceiveRow++;
+        delete mFileMessage;
+        QUuid fUuid(QUuid(receiveFileModel->index(fileReceiveRow, 5).data(Qt::DisplayRole).toString()));
+        mFileMessage = new FileMessage(QFileInfo(receiveFileModel->index(fileReceiveRow, 4).data(Qt::DisplayRole).toString()), fUuid);
 
+        // start receiver
+        delete mFileReceiver;
+        mFileMessage->setTransferPort(1213);
+        mFileReceiver = new FileReceiver(new QFile(saveDirName+"/"+mFileMessage->getFileName()),
+                                         QHostAddress::Any,
+                                         mFileMessage->getTransferPort(),
+                                         mFileMessage->getUuid());
+        connect(mFileReceiver, SIGNAL(receiveEnd(qint64)), this, SLOT(fileReceiveEnd(qint64)));
+        connect(mFileReceiver, SIGNAL(receiveError(QString)), this, SLOT(fileReceiveError(QString)));
+        connect(mFileReceiver, SIGNAL(receiveProgress(qint64,qint64)), this, SLOT(fileReceiveProgress(qint64,qint64)));
+
+        mFileReceiver->start();
+
+        ChatMessage fileMsg(fUuid, ChatMessage::Response, sender->getUuid(), mFileMessage->toString());
+        mFileMsgService->send(fileMsg, receiver->getIp());
+    } else { // receive over
+//        QMessageBox::information(this, "receive ok", "receive finish");
+        clearReceiveFiles();
+        ChatMessage msg(ChatMessage::Response, receiver->getUuid(), "receive finish<br/><a href=\"openDir?dir="+saveDirName+"\">open save dir</a>");
+        ChatRecord *record = new ChatRecord(msg);
+        mChatRecords.append(record);
+        updateChatRecordView();
+    }
 }
 
 void ChatForm::fileReceiveError(QString errorStr){
-
+    QMessageBox::warning(this, "receive error", errorStr);
+    ChatMessage msg(ChatMessage::Response, receiver->getUuid(), "receive error: "+errorStr);
+    ChatRecord *record = new ChatRecord(msg);
+    mChatRecords.append(record);
+    updateChatRecordView();
 }
 
 void ChatForm::fileReceiveProgress(qint64 maximum, qint64 value){
-
+    QModelIndex progressBarIndex = receiveFileModel->index(fileReceiveRow, 1);
+    QProgressBar *bar = (QProgressBar *)ui->receiveFileTableView->indexWidget(progressBarIndex);
+    bar->setMaximum(maximum);
+    bar->setValue(value);
 }
 
 void ChatForm::clearSendFiles(){
     sendFileModel->removeRows(0, sendFileModel->rowCount());
+}
+void ChatForm::clearReceiveFiles(){
+    receiveFileModel->removeRows(0, receiveFileModel->rowCount());
+}
+
+void ChatForm::on_saveReceiveButton_clicked()
+{
+    saveDirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                            saveDirName,
+                                                            QFileDialog::ShowDirsOnly
+                                                            | QFileDialog::DontResolveSymlinks);
+    if(saveDirName.isEmpty()){
+        QMessageBox::warning(this, "directory error", "directory is not exist");
+        return;
+    } else { // start receive
+
+        fileReceiveRow = -1;
+        fileReceiveEnd(0); // start receive
+    }
+}
+
+void ChatForm::on_cancelReceiveButton_clicked()
+{
+    ChatMessage mes(ChatMessage::Response, sender->getUuid(), "unaccepted");
+    mFileMsgService->send(mes, receiver->getIp());
+    clearReceiveFiles();
+}
+
+void ChatForm::on_chatRecordBrowser_anchorClicked(const QUrl &url)
+{
+    QList<QPair<QString, QString> > items = url.queryItems();
+    if(url.path() == "openDir") {  // openDir
+        for(int i=0; i<items.size(); i++){
+            QPair<QString, QString> *dirPair = &items[i];
+            if(dirPair->first == "dir") {
+                QFileDialog *fileDialog = new QFileDialog(0,QString(), dirPair->second);
+                fileDialog->setOption(QFileDialog::DontUseNativeDialog, false);
+                fileDialog->show();
+            }
+        }
+        return;
+    } else if(QMessageBox::question(this, "open url", "do you want to open this url?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok){
+        QDesktopServices::openUrl(url);
+    }
 }

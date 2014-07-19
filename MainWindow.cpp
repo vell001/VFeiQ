@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+//    setWindowFlags(Qt::FramelessWindowHint);
+
     (*mFriends)[myself->getUuid()] = *(myself);
 
     /* chat service */
@@ -175,7 +177,7 @@ void MainWindow::activated ( QSystemTrayIcon::ActivationReason reason ){
         break;
     case QSystemTrayIcon::DoubleClick:
         qDebug("鼠标双击！");
-        showNormal();
+        this->isHidden() ? show() : hide();
         break;
     case QSystemTrayIcon::MiddleClick:
         qDebug("鼠标中键！");
@@ -267,3 +269,12 @@ void MainWindow::doubleClickedSearchResult(QModelIndex index){
     searchResultWidget->clear();
     searchResultWidget->setHidden(true);
 }
+
+void MainWindow::on_contentsTreeWidget_customContextMenuRequested(const QPoint &pos)
+{
+    QMenu *popMenu = new QMenu(this);
+    popMenu->addAction(ui->actionNewFriendSet);//往菜单内添加QAction   该action在前面用设计器定义了
+    popMenu->addAction(ui->actionDeleteFriendSet);
+    popMenu->exec(QCursor::pos());//弹出右键菜单，菜单位置为光标位置
+}
+

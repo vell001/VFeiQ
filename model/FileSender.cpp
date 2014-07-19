@@ -46,8 +46,8 @@ void FileSender::send(){
 void FileSender::start(){
     qDebug() << "start send";
     if(!file->open(QFile::ReadOnly)){
-        qDebug() << "file cannot open";
-        emit sendError("file cannot open");
+        qDebug() << "file cannot open: " << file->fileName();
+        emit sendError("file cannot open: " + file->fileName());
         return;
     }
     totalBytes = file->size();

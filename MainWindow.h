@@ -28,6 +28,7 @@
 #include "model/FileReceiver.h"
 #include "model/FileSender.h"
 #include <QFile>
+#include <QMenu>
 
 namespace Ui {
 class MainWindow;
@@ -58,6 +59,8 @@ private slots:
     void on_searchEdit_textChanged(const QString &arg1);
     void doubleClickedSearchResult(QModelIndex);
 
+    void on_contentsTreeWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::MainWindow *ui;
     BroadcastService *mBroadcastService;
@@ -83,7 +86,6 @@ private:
     QAction *quitAction;
 
     QListWidget *searchResultWidget;
-
 };
 
 #endif // MAINWINDOW_H
