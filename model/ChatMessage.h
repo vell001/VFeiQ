@@ -30,8 +30,8 @@ public:
         UserXML
     };
 
-    ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
-    ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
+    ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType = Text, QObject *parent = 0);
+    ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType = Text, QObject *parent = 0);
     ChatMessage(const QString &messageStr, QObject *parent = 0);
     ChatMessage(const ChatMessage &cm);
 
@@ -41,11 +41,13 @@ public:
     QUuid getSenderUuid();
     Mode getMode();
     QString getContent();
+    ContentType getContentType();
 
     void setUuid(const QUuid &uuid);
     void setSenderUuid(const QUuid &senderUuid);
     void setMode(Mode mode);
     void setContent(const QString &content);
+    void setContentType(ContentType contentType);
 
     ChatMessage &operator=(const ChatMessage &cm);
 signals:

@@ -47,7 +47,7 @@ void UdpService::readyRead (){
 
     ChatMessage message(QString::fromUtf8(buffer));
 
-//    connect(message, SIGNAL(parseError(QString)), this, SIGNAL(receiveError(QString)));
+    connect(&message, SIGNAL(parseError(QString)), this, SIGNAL(receiveError(QString)));
 
     emit received(senderIp, senderPort, message);
 }

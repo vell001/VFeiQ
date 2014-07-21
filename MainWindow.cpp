@@ -18,18 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
     (*mFriends)[myself->getUuid()] = *(myself);
 
     /* chat service */
-    mChatService = ChatService::getService(9514);
+    mChatService = ChatService::getService();
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(chatReceiveSuccess(QHostAddress,quint16,ChatMessage)));
-
-    /* file message service */
-    connect(BroadcastService::getService(9323), SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(fMsgReceiveSuccess(QHostAddress,quint16,ChatMessage)));
 
     /* broadcast service*/
     mBroadcastService = BroadcastService::getService();
-    ChatMessage reqMes(ChatMessage::Request, myself->getUuid(), myself->toString(), this);
+    ChatMessage reqMes(ChatMessage::Request, myself->getUuid(), myself->toString());
     mBroadcastService->send(reqMes, QHostAddress("255.255.255.255"));
     connect(mBroadcastService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(broadcastReceived(QHostAddress,quint16,ChatMessage)));
-
 
     /* view */
     ui->userNameLabel->setText(myself->getName());
@@ -121,7 +117,7 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
     updateContentsTreeWidget();
 
     if(message.getMode() == ChatMessage::Request) {
-        ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString(), this);
+        ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString());
         mBroadcastService->send(myselfMessage, senderIp);
     }
 }
@@ -230,7 +226,7 @@ void MainWindow::closeEvent ( QCloseEvent * event ){
             (*mChatForms)[key]->close();
         }
         myself->setStatus(User::OffLine);
-        ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString(), this);
+        ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString());
         mBroadcastService->send(myselfMessage, QHostAddress("255.255.255.255"));
     }
 }

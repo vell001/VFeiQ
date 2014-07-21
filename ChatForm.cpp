@@ -11,8 +11,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     ui->setupUi(this);
 
     setAttribute(Qt::WA_DeleteOnClose);
-    this->mChatService = ChatService::getService(9514);
-    this->mFileMsgService = BroadcastService::getService(9323);
+    this->mChatService = ChatService::getService();
 
     ui->userIcon->setIcon(mIconService->getIconByUuid(this->receiver->getIconUuid()));
     ui->userIcon->setIconSize(QSize(40, 40));
@@ -25,7 +24,6 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(receiveSuccess(QHostAddress,quint16,ChatMessage)));
     connect(mChatService, SIGNAL(sendError(QUuid, QString)), this, SLOT(sendError(QUuid, QString)));
     connect(mChatService, SIGNAL(sendSuccess(QUuid)), this, SLOT(sendSuccess(QUuid)));
-    connect(mFileMsgService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(fileMsgReceived(QHostAddress,quint16,ChatMessage)));
 
     updateChatRecordView();
     loadSetting();
@@ -63,7 +61,6 @@ ChatForm::~ChatForm()
     delete mFileMessage;
     delete sendFileModel;
     delete receiveFileModel;
-//    qDebug() << "ChatForm::~ChatForm()";
     delete ui;
 }
 
@@ -115,7 +112,7 @@ void ChatForm::keyPressEvent(QKeyEvent *e){
 }
 
 void ChatForm::sendMessage() {
-    ChatMessage message(ChatMessage::Request, sender->getUuid(), ui->messageTextEdit->toHtml(), this);
+    ChatMessage message(ChatMessage::Request, sender->getUuid(), ui->messageTextEdit->toHtml());
     mChatService->send(message, receiver->getIp());
     ChatRecord *record = new ChatRecord(message);
     mChatRecords.append(record);
@@ -413,7 +410,7 @@ void ChatForm::on_chatRecordBrowser_anchorClicked(const QUrl &url)
 
 void ChatForm::on_shakeButton_clicked()
 {
-    ChatMessage message(ChatMessage::Request, sender->getUuid(), ":/shake", this);
+    ChatMessage message(ChatMessage::Request, sender->getUuid(), ":/shake");
     mChatService->send(message, receiver->getIp());
     ChatRecord *record = new ChatRecord(message);
     mChatRecords.append(record);

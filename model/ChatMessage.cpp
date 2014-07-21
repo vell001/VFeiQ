@@ -14,41 +14,20 @@ ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
     QDomElement contentE = msgE.elementsByTagName("content").at(0).toElement();
 
     uuid = QUuid(headE.attribute("id"));
-    mode = Mode(headE.attribute("type").toInt());
+    mode = Mode(headE.attribute("mode").toInt());
     senderUuid = QUuid(headE.attribute("senderUuid"));
+    contentType = ContentType(headE.attribute("contentType").toInt());
     content = contentE.text();
-/*
-    if(!mesStr.startsWith("HEAD:") || !mesStr.endsWith(";")){
-        emit parseError("Incomplete message");
-    } else {
-        int splitIndex = mesStr.indexOf(';');
-        if(splitIndex == -1 || splitIndex == mesStr.size()-1){
-            emit parseError("Incomplete message structure");
-        } else {
-            QString head = mesStr.left(splitIndex);
-            QString contentArr = mesStr.right(mesStr.size() - splitIndex - 1);
-            contentArr = contentArr.left(contentArr.size()-1);
-
-            QStringList headList = head.split(':');
-            if(headList.size() != 4) {
-                emit parseError("Incomplete head structure");
-            } else {
-                setUuid(QUuid(headList[1]));
-                setType(Type(headList[2].toInt()));
-                setSenderUuid(QUuid(headList[3]));
-            }
-            content = contentArr;
-        }
-    }*/
 }
 
-ChatMessage::ChatMessage(const QUuid &uuid, Mode type, const QUuid &senderUuid, const QString &content, QObject *parent) :
+ChatMessage::ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType, QObject *parent) :
     QObject(parent),
     uuid(uuid),
     senderUuid(senderUuid),
-    content(content)
+    content(content),
+    mode(mode),
+    contentType(contentType)
 {
-    this->mode = type;
 }
 
 ChatMessage::ChatMessage(const ChatMessage& cm) :
@@ -64,16 +43,18 @@ ChatMessage &ChatMessage::operator=(const ChatMessage &cm){
     senderUuid = cm.senderUuid;
     mode = cm.mode;
     content = cm.content;
+    contentType = cm.contentType;
     return *this;
 }
 
-ChatMessage::ChatMessage(Mode type, const QUuid &senderUuid, const QString &content, QObject *parent) :
+ChatMessage::ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType,  QObject *parent) :
     QObject(parent),
     senderUuid(senderUuid),
-    content(content)
+    content(content),
+    mode(mode),
+    contentType(contentType)
 {
     setUuid(QUuid::createUuid());
-    this->mode = type;
 }
 
 QString ChatMessage::toString(){
@@ -84,8 +65,9 @@ QString ChatMessage::toString(){
     QDomText contentT = messageDoc.createTextNode(content);
 
     headE.setAttribute("id", uuid.toString());
-    headE.setAttribute("type", (int)mode);
+    headE.setAttribute("mode", (int)mode);
     headE.setAttribute("senderUuid", senderUuid.toString());
+    headE.setAttribute("contentType", (int)contentType);
 
     messageDoc.appendChild(msgE);
     msgE.appendChild(headE);
@@ -108,6 +90,9 @@ QUuid ChatMessage::getSenderUuid(){
 ChatMessage::Mode ChatMessage::getMode(){
     return mode;
 }
+ChatMessage::ContentType ChatMessage::getContentType(){
+    return contentType;
+}
 
 void ChatMessage::setContent(const QString& content){
     this->content = content;
@@ -121,6 +106,10 @@ void ChatMessage::setSenderUuid(const QUuid &senderUuid){
     this->senderUuid = senderUuid;
 }
 
-void ChatMessage::setMode(Mode type){
-    this->mode = type;
+void ChatMessage::setMode(Mode mode){
+    this->mode = mode;
+}
+
+void ChatMessage::setContentType(ContentType contentType){
+    this->contentType = contentType;
 }

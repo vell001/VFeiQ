@@ -17,18 +17,17 @@ ChatService::ChatService(quint16 chatPort, QObject *parent) :
 void ChatService::listen(){
     sender = UserService::getService()->getMyself();
     connect(mUdpService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(received(QHostAddress,quint16,ChatMessage)));
-    connect(mUdpService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(received(QHostAddress,quint16,ChatMessage)));
     connect(mUdpService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SIGNAL(receivedMessage(QHostAddress,quint16,ChatMessage)));
 }
 
 ChatService *ChatService::getService(){
-    static ChatService mChatService;
-    return &mChatService;
+    static ChatService service;
+    return &service;
 }
 
 ChatService *ChatService::getService(quint16 chatPort){
-    static ChatService mChatService(chatPort);
-    return &mChatService;
+    static ChatService service(chatPort);
+    return &service;
 }
 
 ChatService::~ChatService(){
