@@ -32,6 +32,7 @@
 #include "model/FileMessage.h"
 #include "MessageDialog.h"
 #include <QDesktopServices>
+#include "SharedFilesDialog.h"
 
 namespace Ui {
 class ChatForm;
@@ -64,6 +65,8 @@ private slots:
     void fileReceiveError(QString);
     void fileReceiveProgress(qint64,qint64);
 
+    void shakeTimeOut();
+
     void on_closeButton_clicked();
 
     void on_fontButton_clicked();
@@ -84,6 +87,10 @@ private slots:
 
     void on_chatRecordBrowser_anchorClicked(const QUrl &arg1);
 
+    void on_shakeButton_clicked();
+
+    void on_sharedFilesButton_clicked();
+
 signals:
     void closed(QUuid receiverUuid);
 private:
@@ -94,7 +101,6 @@ private:
     void sendMessage();
 
     QList<ChatRecord *> mChatRecords;
-    void initForm();
     void updateChatRecordView();
 
     IconService *mIconService;
@@ -115,6 +121,15 @@ private:
 
     void clearSendFiles();
     void clearReceiveFiles();
+
+    // shake
+    QTimer* mShakeTimer;
+    int mShakePosition;
+    QPoint mShakeCurPos;
+    int shakeMaxLimitTimes;
+    int shakeMaxLimitSpace;
+    void startShake();
+
 };
 
 #endif // CHATFORM_H

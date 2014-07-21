@@ -18,14 +18,18 @@ MainWindow::MainWindow(QWidget *parent) :
     (*mFriends)[myself->getUuid()] = *(myself);
 
     /* chat service */
-    mChatService = ChatService::getService();
+    mChatService = ChatService::getService(9514);
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(chatReceiveSuccess(QHostAddress,quint16,ChatMessage)));
+
+    /* file message service */
+    connect(BroadcastService::getService(9323), SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(fMsgReceiveSuccess(QHostAddress,quint16,ChatMessage)));
 
     /* broadcast service*/
     mBroadcastService = BroadcastService::getService();
     ChatMessage reqMes(ChatMessage::Request, myself->getUuid(), myself->toString(), this);
     mBroadcastService->send(reqMes, QHostAddress("255.255.255.255"));
     connect(mBroadcastService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(broadcastReceived(QHostAddress,quint16,ChatMessage)));
+
 
     /* view */
     ui->userNameLabel->setText(myself->getName());
@@ -116,7 +120,7 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
     qDebug() << "received" << user.toString();
     updateContentsTreeWidget();
 
-    if(message.getType() == ChatMessage::Request) {
+    if(message.getMode() == ChatMessage::Request) {
         ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString(), this);
         mBroadcastService->send(myselfMessage, senderIp);
     }
@@ -153,13 +157,30 @@ void MainWindow::updateContentsTreeWidget(){
 }
 
 void MainWindow::chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
+    if(!mFriends->contains(message.getSenderUuid())) {
+        qDebug() << "no that friend";
+    } else {
+        if(!mChatForms->contains(message.getSenderUuid())){
+            mChatRecords->append(ChatRecord(message));
+            MessageDialog *mMessageDialog = new MessageDialog(tr("新消息提醒！！！"),
+                    QString(tr("%1:\r\n%2")).arg((*mFriends)[message.getSenderUuid()].getName()).arg(message.getContent()),
+                    mIconService->getIconByUuid((*mFriends)[message.getSenderUuid()].getIconUuid()),
+                    10000,
+                    message.getSenderUuid());
+            mMessageDialog->show();
+            connect(mMessageDialog, SIGNAL(accepted(QUuid)), this, SLOT(openChatForm(QUuid)));
+        }
+    }
+}
+
+void MainWindow::fMsgReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     mChatRecords->append(ChatRecord(message));
     if(!mFriends->contains(message.getSenderUuid())) {
         qDebug() << "no that friend";
     } else {
         if(!mChatForms->contains(message.getSenderUuid())){
             MessageDialog *mMessageDialog = new MessageDialog(tr("新消息提醒！！！"),
-                    QString(tr("%1:\r\n%2")).arg((*mFriends)[message.getSenderUuid()].getName()).arg(message.getContent()),
+                    QString(tr("%1:\r\n%2")).arg((*mFriends)[message.getSenderUuid()].getName()).arg(FileMessage::fileMessagesToHTMLStr(*FileMessage::parseFileMessages(message.getContent()))),
                     mIconService->getIconByUuid((*mFriends)[message.getSenderUuid()].getIconUuid()),
                     10000,
                     message.getSenderUuid());

@@ -2,7 +2,9 @@
 
 FileMessage::FileMessage(QObject *parent) :
     QObject(parent),
-    uuid(QUuid::createUuid())
+    uuid(QUuid::createUuid()),
+    size(0),
+    transferPort(0)
 {
 }
 
@@ -88,23 +90,10 @@ QHash<QUuid, FileMessage *> *FileMessage::parseFileMessages(const QString &messa
         fMsg->setTransferPort(fileE.attribute("transferPort").toUInt());
         (*fileMessages)[fMsg->getUuid()] = fMsg;
     }
-//    foreach (QDomNode file, msgE.childNodes()) {
-//        if(!file.isElement()) continue;
-//        QDomElement fileE = file.toElement();
-//        fMsg = new FileMessage();
-
-//        fMsg->setUuid(QUuid(fileE.attribute("id")));
-//        fMsg->setFileName(fileE.attribute("fileName"));
-//        fMsg->setFileFullName(fileE.attribute("fileFullName"));
-//        fMsg->setSize(fileE.attribute("size").toLongLong());
-//        fMsg->setType(Type(fileE.attribute("type").toInt()));
-//        fMsg->setTransferPort(fileE.attribute("transferPort").toUInt());
-//        (*fileMessages)[fMsg->getUuid()] = fMsg;
-//    }
     return fileMessages;
 }
 
-QString FileMessage::fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fileMessages){
+QString FileMessage::fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fileMessages, int indent){
     QDomDocument messageDoc;
     QDomElement filesE = messageDoc.createElement("files");
     messageDoc.appendChild(filesE);
@@ -119,10 +108,10 @@ QString FileMessage::fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fil
         msgE.setAttribute("transferPort", fMsg->getTransferPort());
         filesE.appendChild(msgE);
     }
-    return messageDoc.toString(-1);
+    return messageDoc.toString(indent);
 }
 
-QString FileMessage::fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fileMessages){
+QString FileMessage::fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fileMessages, int indent){
     QDomDocument messageDoc;
     QDomElement filesE = messageDoc.createElement("div");
     filesE.setAttribute("id", "files");
@@ -135,7 +124,7 @@ QString FileMessage::fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fi
         msgE.appendChild(msgT);
         filesE.appendChild(msgE);
     }
-    return messageDoc.toString(-1);
+    return messageDoc.toString(indent);
 }
 
 QUuid FileMessage::getUuid(){

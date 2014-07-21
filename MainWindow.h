@@ -49,6 +49,7 @@ public slots:
     void doubleClickedContents(QModelIndex);
     void broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void fMsgReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 
 protected:
     virtual void closeEvent ( QCloseEvent * event );

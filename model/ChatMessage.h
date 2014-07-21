@@ -18,12 +18,20 @@ class ChatMessage : public QObject
 {
     Q_OBJECT
 public:
-    enum Type {
+    enum Mode {
         Request,
         Response
     };
-    ChatMessage(Type type, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
-    ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
+
+    enum ContentType {
+        Text,
+        FileXML,
+        FilesXML,
+        UserXML
+    };
+
+    ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
+    ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content, QObject *parent = 0);
     ChatMessage(const QString &messageStr, QObject *parent = 0);
     ChatMessage(const ChatMessage &cm);
 
@@ -31,12 +39,12 @@ public:
 
     QUuid getUuid();
     QUuid getSenderUuid();
-    Type getType();
+    Mode getMode();
     QString getContent();
 
     void setUuid(const QUuid &uuid);
     void setSenderUuid(const QUuid &senderUuid);
-    void setType(Type type);
+    void setMode(Mode mode);
     void setContent(const QString &content);
 
     ChatMessage &operator=(const ChatMessage &cm);
@@ -47,8 +55,9 @@ public slots:
 private:
     QUuid uuid;
     QUuid senderUuid;
-    Type type;
+    Mode mode;
     QString content;
+    ContentType contentType;
 };
 
 #endif // CHATMESSAGE_H

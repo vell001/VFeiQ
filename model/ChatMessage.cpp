@@ -14,7 +14,7 @@ ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
     QDomElement contentE = msgE.elementsByTagName("content").at(0).toElement();
 
     uuid = QUuid(headE.attribute("id"));
-    type = Type(headE.attribute("type").toInt());
+    mode = Mode(headE.attribute("type").toInt());
     senderUuid = QUuid(headE.attribute("senderUuid"));
     content = contentE.text();
 /*
@@ -42,13 +42,13 @@ ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
     }*/
 }
 
-ChatMessage::ChatMessage(const QUuid &uuid, Type type, const QUuid &senderUuid, const QString &content, QObject *parent) :
+ChatMessage::ChatMessage(const QUuid &uuid, Mode type, const QUuid &senderUuid, const QString &content, QObject *parent) :
     QObject(parent),
     uuid(uuid),
     senderUuid(senderUuid),
     content(content)
 {
-    this->type = type;
+    this->mode = type;
 }
 
 ChatMessage::ChatMessage(const ChatMessage& cm) :
@@ -56,24 +56,24 @@ ChatMessage::ChatMessage(const ChatMessage& cm) :
     senderUuid(cm.senderUuid),
     content(cm.content)
 {
-    type = cm.type;
+    mode = cm.mode;
 }
 
 ChatMessage &ChatMessage::operator=(const ChatMessage &cm){
     uuid = cm.uuid;
     senderUuid = cm.senderUuid;
-    type = cm.type;
+    mode = cm.mode;
     content = cm.content;
     return *this;
 }
 
-ChatMessage::ChatMessage(Type type, const QUuid &senderUuid, const QString &content, QObject *parent) :
+ChatMessage::ChatMessage(Mode type, const QUuid &senderUuid, const QString &content, QObject *parent) :
     QObject(parent),
     senderUuid(senderUuid),
     content(content)
 {
     setUuid(QUuid::createUuid());
-    this->type = type;
+    this->mode = type;
 }
 
 QString ChatMessage::toString(){
@@ -84,7 +84,7 @@ QString ChatMessage::toString(){
     QDomText contentT = messageDoc.createTextNode(content);
 
     headE.setAttribute("id", uuid.toString());
-    headE.setAttribute("type", (int)type);
+    headE.setAttribute("type", (int)mode);
     headE.setAttribute("senderUuid", senderUuid.toString());
 
     messageDoc.appendChild(msgE);
@@ -105,8 +105,8 @@ QUuid ChatMessage::getUuid(){
 QUuid ChatMessage::getSenderUuid(){
     return senderUuid;
 }
-ChatMessage::Type ChatMessage::getType(){
-    return type;
+ChatMessage::Mode ChatMessage::getMode(){
+    return mode;
 }
 
 void ChatMessage::setContent(const QString& content){
@@ -121,6 +121,6 @@ void ChatMessage::setSenderUuid(const QUuid &senderUuid){
     this->senderUuid = senderUuid;
 }
 
-void ChatMessage::setType(Type type){
-    this->type = type;
+void ChatMessage::setMode(Mode type){
+    this->mode = type;
 }

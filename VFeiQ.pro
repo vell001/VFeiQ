@@ -28,7 +28,9 @@ SOURCES += main.cpp\
     MessageDialog.cpp \
     model/FileSender.cpp \
     model/FileReceiver.cpp \
-    model/FileMessage.cpp
+    model/FileMessage.cpp \
+    SharedFilesDialog.cpp \
+    service/StorageService.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -45,11 +47,14 @@ HEADERS  += MainWindow.h \
     MessageDialog.h \
     model/FileSender.h \
     model/FileReceiver.h \
-    model/FileMessage.h
+    model/FileMessage.h \
+    SharedFilesDialog.h \
+    service/StorageService.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
-    MessageDialog.ui
+    MessageDialog.ui \
+    SharedFilesDialog.ui
 
 RESOURCES += \
     skins.qrc \

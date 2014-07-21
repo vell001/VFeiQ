@@ -24,8 +24,8 @@ public:
     QString toString();
 
     static QHash<QUuid, FileMessage *> *parseFileMessages(const QString &messagesStr);
-    static QString fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fileMessages);
-    static QString fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fileMessages);
+    static QString fileMessagesToXMLStr(const QHash<QUuid, FileMessage *> &fileMessages, int indent = -1);
+    static QString fileMessagesToHTMLStr(const QHash<QUuid, FileMessage *> &fileMessages, int indent = -1);
 
     QUuid getUuid();
     QString getFileName();
