@@ -13,6 +13,7 @@
 #include <QString>
 #include <QStringList>
 #include <QtXml>
+#include <QDateTime>
 
 class ChatMessage : public QObject
 {
@@ -30,8 +31,10 @@ public:
         UserXML
     };
 
-    ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType = Text, QObject *parent = 0);
-    ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType = Text, QObject *parent = 0);
+    ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content,
+                ContentType contentType = Text, const QDateTime &createTime=QDateTime::currentDateTime(), QObject *parent = 0);
+    ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content,
+                ContentType contentType = Text, const QDateTime &createTime=QDateTime::currentDateTime(), QObject *parent = 0);
     ChatMessage(const QString &messageStr, QObject *parent = 0);
     ChatMessage(const ChatMessage &cm);
 
@@ -42,12 +45,14 @@ public:
     Mode getMode();
     QString getContent();
     ContentType getContentType();
+    QDateTime getCreateTime();
 
     void setUuid(const QUuid &uuid);
     void setSenderUuid(const QUuid &senderUuid);
     void setMode(Mode mode);
     void setContent(const QString &content);
     void setContentType(ContentType contentType);
+    void setCreateTime(const QDateTime &createTime);
 
     ChatMessage &operator=(const ChatMessage &cm);
 signals:
@@ -60,6 +65,7 @@ private:
     Mode mode;
     QString content;
     ContentType contentType;
+    QDateTime createTime;
 };
 
 #endif // CHATMESSAGE_H

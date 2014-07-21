@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* broadcast service*/
     mBroadcastService = BroadcastService::getService();
-    ChatMessage reqMes(ChatMessage::Request, myself->getUuid(), myself->toString());
+    ChatMessage reqMes(ChatMessage::Request, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
     mBroadcastService->send(reqMes, QHostAddress("255.255.255.255"));
     connect(mBroadcastService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(broadcastReceived(QHostAddress,quint16,ChatMessage)));
 
@@ -93,32 +93,34 @@ void MainWindow::openChatForm(const QUuid &receiverUuid){
 }
 
 void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
-    User user(message.getContent());
+    if(message.getContentType() == ChatMessage::UserXML) { // User info
+        User user(message.getContent());
 
-    if(user.getIp().isNull() || user.getIp() != senderIp) {
-        user.setIp(senderIp);
-    }
-    if(user.getLogTime().isNull() || user.getLogTime().isValid()) {
-        user.setLogTime(QDateTime::currentDateTime());
-    }
-    if(user.getUuid() != myself->getUuid()) {
-        if(user.getStatus() == User::OffLine) {
-            MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
-            mMessageDialog->show();
-        } else {
-            MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
-            mMessageDialog->show();
+        if(user.getIp().isNull() || user.getIp() != senderIp) {
+            user.setIp(senderIp);
         }
-    }
+        if(user.getLogTime().isNull() || user.getLogTime().isValid()) {
+            user.setLogTime(QDateTime::currentDateTime());
+        }
+        if(user.getUuid() != myself->getUuid()) {
+            if(user.getStatus() == User::OffLine) {
+                MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
+                mMessageDialog->show();
+            } else {
+                MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
+                mMessageDialog->show();
+            }
+        }
 
-    (*mFriends)[message.getSenderUuid()] = user;
+        (*mFriends)[message.getSenderUuid()] = user;
 
-    qDebug() << "received" << user.toString();
-    updateContentsTreeWidget();
+        qDebug() << "received" << user.toString();
+        updateContentsTreeWidget();
 
-    if(message.getMode() == ChatMessage::Request) {
-        ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString());
-        mBroadcastService->send(myselfMessage, senderIp);
+        if(message.getMode() == ChatMessage::Request) {
+            ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString());
+            mBroadcastService->send(myselfMessage, senderIp);
+        }
     }
 }
 
@@ -282,7 +284,6 @@ void MainWindow::on_searchEdit_textChanged(const QString &arg1)
 void MainWindow::doubleClickedSearchResult(QModelIndex index){
     QUuid userUuid = QUuid(index.data(Qt::UserRole).toString());
     openChatForm(userUuid);
-//    ui->searchEdit->clear();
     searchResultWidget->clear();
     searchResultWidget->setHidden(true);
 }
@@ -290,8 +291,8 @@ void MainWindow::doubleClickedSearchResult(QModelIndex index){
 void MainWindow::on_contentsTreeWidget_customContextMenuRequested(const QPoint &pos)
 {
     QMenu *popMenu = new QMenu(this);
-    popMenu->addAction(ui->actionNewFriendSet);//往菜单内添加QAction   该action在前面用设计器定义了
+    popMenu->addAction(ui->actionNewFriendSet); // 往菜单内添加QAction   该action在前面用设计器定义了
     popMenu->addAction(ui->actionDeleteFriendSet);
-    popMenu->exec(QCursor::pos());//弹出右键菜单，菜单位置为光标位置
+    popMenu->exec(QCursor::pos()); // 弹出右键菜单，菜单位置为光标位置
 }
 

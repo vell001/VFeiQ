@@ -17,25 +17,31 @@ ChatMessage::ChatMessage(const QString &mesStr, QObject *parent) :
     mode = Mode(headE.attribute("mode").toInt());
     senderUuid = QUuid(headE.attribute("senderUuid"));
     contentType = ContentType(headE.attribute("contentType").toInt());
+    createTime = QDateTime::fromString(headE.attribute("createTime"));
     content = contentE.text();
 }
 
-ChatMessage::ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType, QObject *parent) :
+ChatMessage::ChatMessage(const QUuid &uuid, Mode mode, const QUuid &senderUuid,
+                         const QString &content, ContentType contentType,
+                         const QDateTime &createTime, QObject *parent) :
     QObject(parent),
     uuid(uuid),
     senderUuid(senderUuid),
     content(content),
     mode(mode),
-    contentType(contentType)
+    contentType(contentType),
+    createTime(createTime)
 {
 }
 
 ChatMessage::ChatMessage(const ChatMessage& cm) :
     uuid(cm.uuid),
     senderUuid(cm.senderUuid),
-    content(cm.content)
+    content(cm.content),
+    mode(cm.mode),
+    contentType(cm.contentType),
+    createTime(cm.createTime)
 {
-    mode = cm.mode;
 }
 
 ChatMessage &ChatMessage::operator=(const ChatMessage &cm){
@@ -44,17 +50,20 @@ ChatMessage &ChatMessage::operator=(const ChatMessage &cm){
     mode = cm.mode;
     content = cm.content;
     contentType = cm.contentType;
+    createTime = cm.createTime;
     return *this;
 }
 
-ChatMessage::ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content, ContentType contentType,  QObject *parent) :
+ChatMessage::ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content,
+                         ContentType contentType, const QDateTime &createTime, QObject *parent) :
     QObject(parent),
     senderUuid(senderUuid),
     content(content),
     mode(mode),
-    contentType(contentType)
+    contentType(contentType),
+    uuid(QUuid::createUuid()),
+    createTime(createTime)
 {
-    setUuid(QUuid::createUuid());
 }
 
 QString ChatMessage::toString(){
@@ -68,6 +77,7 @@ QString ChatMessage::toString(){
     headE.setAttribute("mode", (int)mode);
     headE.setAttribute("senderUuid", senderUuid.toString());
     headE.setAttribute("contentType", (int)contentType);
+    headE.setAttribute("createTime", createTime.toString());
 
     messageDoc.appendChild(msgE);
     msgE.appendChild(headE);
@@ -93,6 +103,9 @@ ChatMessage::Mode ChatMessage::getMode(){
 ChatMessage::ContentType ChatMessage::getContentType(){
     return contentType;
 }
+QDateTime ChatMessage::getCreateTime(){
+    return createTime;
+}
 
 void ChatMessage::setContent(const QString& content){
     this->content = content;
@@ -112,4 +125,8 @@ void ChatMessage::setMode(Mode mode){
 
 void ChatMessage::setContentType(ContentType contentType){
     this->contentType = contentType;
+}
+
+void ChatMessage::setCreateTime(const QDateTime &createTime){
+    this->createTime = createTime;
 }

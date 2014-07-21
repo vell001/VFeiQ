@@ -12,6 +12,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
 
     setAttribute(Qt::WA_DeleteOnClose);
     this->mChatService = ChatService::getService();
+    this->mFileMsgService = BroadcastService::getService();
 
     ui->userIcon->setIcon(mIconService->getIconByUuid(this->receiver->getIconUuid()));
     ui->userIcon->setIconSize(QSize(40, 40));
@@ -24,6 +25,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(receiveSuccess(QHostAddress,quint16,ChatMessage)));
     connect(mChatService, SIGNAL(sendError(QUuid, QString)), this, SLOT(sendError(QUuid, QString)));
     connect(mChatService, SIGNAL(sendSuccess(QUuid)), this, SLOT(sendSuccess(QUuid)));
+    connect(mFileMsgService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(fileMsgReceived(QHostAddress,quint16,ChatMessage)));
 
     updateChatRecordView();
     loadSetting();
@@ -234,7 +236,7 @@ void ChatForm::on_sendFileButton_clicked()
             fileMessage = new FileMessage(QFileInfo(sendFileModel->index(i, 4).data(Qt::DisplayRole).toString()));
             fileMessages[fileMessage->getUuid()] = fileMessage;
         }
-        ChatMessage fileMsg(ChatMessage::Request, sender->getUuid(), FileMessage::fileMessagesToXMLStr(fileMessages));
+        ChatMessage fileMsg(ChatMessage::Request, sender->getUuid(), FileMessage::fileMessagesToXMLStr(fileMessages), ChatMessage::FilesXML);
         mFileMsgService->send(fileMsg, receiver->getIp());
 
         // add a filemessage record
@@ -247,6 +249,8 @@ void ChatForm::on_sendFileButton_clicked()
 }
 
 void ChatForm::fileMsgReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
+    if(message.getContentType() != ChatMessage::FilesXML && message.getContentType() != ChatMessage::FileXML)
+        return ;
     if(message.getMode() == ChatMessage::Request){ // someone want to transfer files to you
         QHash<QUuid, FileMessage *> *fileMessages = FileMessage::parseFileMessages(message.getContent());
 //    heads << "filename" << "progress" << "size" << "type" << "url" << "uuid";
@@ -334,7 +338,7 @@ void ChatForm::fileReceiveEnd(qint64 bytes){
 
         mFileReceiver->start();
 
-        ChatMessage fileMsg(fUuid, ChatMessage::Response, sender->getUuid(), mFileMessage->toString());
+        ChatMessage fileMsg(fUuid, ChatMessage::Response, sender->getUuid(), mFileMessage->toString(), ChatMessage::FileXML);
         mFileMsgService->send(fileMsg, receiver->getIp());
     } else { // receive over
         clearReceiveFiles();
@@ -397,9 +401,7 @@ void ChatForm::on_chatRecordBrowser_anchorClicked(const QUrl &url)
         for(int i=0; i<items.size(); i++){
             QPair<QString, QString> *dirPair = &items[i];
             if(dirPair->first == "dir") {
-                QFileDialog *fileDialog = new QFileDialog(0,QString(), dirPair->second);
-                fileDialog->setOption(QFileDialog::DontUseNativeDialog, false);
-                fileDialog->show();
+                QDesktopServices::openUrl(QUrl("file:///" + dirPair->second, QUrl::TolerantMode));
             }
         }
         return;

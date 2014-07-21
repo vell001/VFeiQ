@@ -8,7 +8,7 @@ ChatRecord::ChatRecord(QObject *parent) :
 
 ChatRecord::ChatRecord(ChatMessage message, QObject *parent) :
     QObject(parent),
-    time(QDateTime::currentDateTime()),
+    time(message.getCreateTime()),
     uuid(message.getUuid()),
     userUuid(message.getSenderUuid()),
     content(message.getContent()),
