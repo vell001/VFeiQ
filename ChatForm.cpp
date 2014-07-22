@@ -10,6 +10,10 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    /* recent friends */
+    UserService::getService()->insertRecentFriend(*receiver);
+    /* end of recent friends */
+
     setAttribute(Qt::WA_DeleteOnClose);
     this->mChatService = ChatService::getService();
     this->mFileMsgService = BroadcastService::getService();
@@ -249,9 +253,9 @@ void ChatForm::on_sendFileButton_clicked()
 }
 
 void ChatForm::fileMsgReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
-    if(message.getContentType() != ChatMessage::FilesXML && message.getContentType() != ChatMessage::FileXML)
-        return ;
     if(message.getMode() == ChatMessage::Request){ // someone want to transfer files to you
+        if(message.getContentType() != ChatMessage::FilesXML && message.getContentType() != ChatMessage::FileXML)
+            return ;
         QHash<QUuid, FileMessage *> *fileMessages = FileMessage::parseFileMessages(message.getContent());
 //    heads << "filename" << "progress" << "size" << "type" << "url" << "uuid";
         // init receive table

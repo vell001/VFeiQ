@@ -39,6 +39,14 @@ void UserService::loadSettings(){
     setting.endGroup();
 }
 
+QHash<QString, User> *UserService::getRecentFriends(){
+    return &mRecentFriends;
+}
+
+void UserService::insertRecentFriend(const User &user){
+    mRecentFriends[QDateTime::currentDateTime().toString()] = user;
+}
+
 UserService::~UserService(){
     saveSettings();
 }

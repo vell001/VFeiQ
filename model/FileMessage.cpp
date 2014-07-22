@@ -33,12 +33,12 @@ FileMessage::FileMessage(const QFileInfo &info, const QUuid &uuid, quint16 trans
     }
 }
 
-FileMessage::FileMessage(const QString &infoStr, QObject *parent) :
+FileMessage::FileMessage(const QString &infoXMLStr, QObject *parent) :
     QObject(parent)
 {
     QDomDocument messageDoc;
     QString errorMsg;
-    messageDoc.setContent(infoStr, &errorMsg);
+    messageDoc.setContent(infoXMLStr, &errorMsg);
     if(!errorMsg.isEmpty()) {
         emit parseError(errorMsg);
     }
@@ -65,11 +65,11 @@ QString FileMessage::toString(){
     return messageDoc.toString(-1);
 }
 
-QHash<QUuid, FileMessage *> *FileMessage::parseFileMessages(const QString &messagesStr){
+QHash<QUuid, FileMessage *> *FileMessage::parseFileMessages(const QString &messagesXMLStr){
     QHash<QUuid, FileMessage *> *fileMessages = new QHash<QUuid, FileMessage *>;
     QDomDocument messageDoc;
     QString errorMsg;
-    messageDoc.setContent(messagesStr, &errorMsg);
+    messageDoc.setContent(messagesXMLStr, &errorMsg);
     if(!errorMsg.isEmpty()) {
         return fileMessages;
     }

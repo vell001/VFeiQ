@@ -21,7 +21,7 @@ public:
 signals:
     void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:
-private:
+protected:
     UdpService *mUdpService;
     void listen();
 };

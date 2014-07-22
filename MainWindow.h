@@ -29,6 +29,7 @@
 #include "model/FileSender.h"
 #include <QFile>
 #include <QMenu>
+#include "SetShareFilesDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -47,6 +48,7 @@ public:
 
 public slots:
     void doubleClickedContents(QModelIndex);
+    void doubleClickedRecentContents(QModelIndex);
     void broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void fMsgReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
@@ -61,6 +63,10 @@ private slots:
     void doubleClickedSearchResult(QModelIndex);
 
     void on_contentsTreeWidget_customContextMenuRequested(const QPoint &pos);
+
+    void on_setShareFilesButton_clicked();
+
+    void on_tabWidget_currentChanged(int index);
 
 private:
     Ui::MainWindow *ui;
@@ -87,6 +93,8 @@ private:
     QAction *quitAction;
 
     QListWidget *searchResultWidget;
+
+    void updateRecentFriendsListWidget();
 };
 
 #endif // MAINWINDOW_H

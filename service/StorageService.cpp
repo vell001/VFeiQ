@@ -24,7 +24,7 @@ StorageService *StorageService::getService(){
     return &service;
 }
 
-QHash<QUuid, FileMessage *> *StorageService::getFileMessages(){
+QHash<QUuid, FileMessage *> *StorageService::getSharedFilesMessages(){
     QFile *mSharedFilesStorage = mStorages["mSharedFilesStorage"];
     QHash<QUuid, FileMessage *> *fileMessages = 0;
     if(mSharedFilesStorage->open(QFile::ReadOnly | QFile::Text)) {
@@ -40,7 +40,7 @@ QHash<QUuid, FileMessage *> *StorageService::getFileMessages(){
     return fileMessages;
 }
 
-bool StorageService::storeFileMessages(QHash<QUuid, FileMessage *> *fileMessages){
+bool StorageService::storeSharedFilesMessages(QHash<QUuid, FileMessage *> *fileMessages){
     QFile *mSharedFilesStorage = mStorages["mSharedFilesStorage"];
     if(mSharedFilesStorage->open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(mSharedFilesStorage);

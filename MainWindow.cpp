@@ -35,7 +35,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchLabel->setText(QString("<img src=\":/images/search.png\" width='24' height='24'/>"));
     ui->signatureLabel->setText(myself->getInfo());
     ui->contentsTreeWidget->setIconSize(QSize(40, 40));
+    ui->recentContentsListWidget->setIconSize(QSize(40, 40));
+
     connect(ui->contentsTreeWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleClickedContents(QModelIndex)));
+
+    connect(ui->recentContentsListWidget,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(doubleClickedRecentContents(QModelIndex)));
     setStyleSheet("MainWindow { border-image:url(:/images/mainwindow_bg.png);}");
 //    setStyleSheet("background-color:#FFFAF0");
     searchResultWidget = new QListWidget(this);
@@ -296,3 +300,54 @@ void MainWindow::on_contentsTreeWidget_customContextMenuRequested(const QPoint &
     popMenu->exec(QCursor::pos()); // 弹出右键菜单，菜单位置为光标位置
 }
 
+/* share files */
+void MainWindow::on_setShareFilesButton_clicked()
+{
+    SetShareFilesDialog *mSetShareFilesDialog = new SetShareFilesDialog;
+    mSetShareFilesDialog->show();
+}
+
+/* end of share files */
+
+/* recent friends */
+void MainWindow::updateRecentFriendsListWidget() {
+    ui->recentContentsListWidget->clear();
+    QHash<QString, User> *recentFriends = UserService::getService()->getRecentFriends();
+
+    QList<QString> keys = recentFriends->keys();
+
+    QList<QDateTime> times;
+    foreach (QString timeStr, keys) {
+        times.push_back(QDateTime::fromString(timeStr));
+    }
+
+    foreach (QDateTime time, times) {
+        User *user = &(*recentFriends)[time.toString()];
+        QListWidgetItem *item = new QListWidgetItem(ui->recentContentsListWidget);
+        item->setIcon(mIconService->getIconByUuid(user->getIconUuid()));
+        item->setText(QString("%1\r\n%2").arg(user->getName()).arg(time.toString()));
+        item->setData(Qt::UserRole, user->getUuid().toString());
+
+        switch (user->getStatus()) {
+        case User::OffLine:
+            item->setBackgroundColor(QColor("#ADADAD"));
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void MainWindow::doubleClickedRecentContents(QModelIndex index){
+    QUuid userUuid = QUuid(index.data(Qt::UserRole).toString());
+    openChatForm(userUuid);
+}
+
+/* end of recent friends */
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    if(index == 2) {
+        updateRecentFriendsListWidget();
+    }
+}

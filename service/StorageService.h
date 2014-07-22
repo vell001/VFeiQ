@@ -14,8 +14,8 @@ public:
     ~StorageService();
     static StorageService *getService();
 
-    QHash<QUuid, FileMessage *> *getFileMessages();
-    bool storeFileMessages(QHash<QUuid, FileMessage *> *);
+    QHash<QUuid, FileMessage *> *getSharedFilesMessages();
+    bool storeSharedFilesMessages(QHash<QUuid, FileMessage *> *);
 signals:
 
 public slots:
