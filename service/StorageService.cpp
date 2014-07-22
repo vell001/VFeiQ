@@ -14,6 +14,7 @@ void StorageService::initStorages(){
     }
     mStorages["SharedFilesStorage"] = new QFile(basePath + "/sharedFilesStorage");
     mStorages["MyselfInfoStorage"] = new QFile(basePath + "/myselfInfoStorage");
+    mStorages["UserIconsStorage"] = new QFile(basePath + "/userIconsStorage");
 }
 
 StorageService::~StorageService(){
@@ -95,10 +96,10 @@ bool StorageService::storeMyself(User *myself){
     }
 }
 
-QHash<QUuid, VIcon *> *StorageService::getUserIcons(){
+QHash<QUuid, Icon *> *StorageService::getUserIcons(){
 
 }
 
-bool StorageService::storeUserIcons(QHash<QUuid, VIcon *> *userIcons){
+bool StorageService::storeUserIcons(QHash<QUuid, Icon *> *userIcons){
 
 }

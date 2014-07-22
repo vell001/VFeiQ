@@ -33,7 +33,7 @@ SOURCES += main.cpp\
     service/StorageService.cpp \
     service/FileShareService.cpp \
     SetShareFilesDialog.cpp \
-    model/VIcon.cpp
+    model/Icon.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -55,7 +55,7 @@ HEADERS  += MainWindow.h \
     service/StorageService.h \
     service/FileShareService.h \
     SetShareFilesDialog.h \
-    model/VIcon.h
+    model/Icon.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \

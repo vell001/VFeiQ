@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include "model/User.h"
-#include <QSettings>
 #include <QDateTime>
 #include "service/StorageService.h"
 

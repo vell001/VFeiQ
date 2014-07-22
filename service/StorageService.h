@@ -4,7 +4,7 @@
 #include <QObject>
 #include "model/FileMessage.h"
 #include "model/User.h"
-#include "model/VIcon.h"
+#include "model/Icon.h"
 #include <QDir>
 #include <QHash>
 
@@ -22,8 +22,8 @@ public:
     User *getMyself();
     bool storeMyself(User *myself);
 
-    QHash<QUuid, VIcon *> *getUserIcons();
-    bool storeUserIcons(QHash<QUuid, VIcon *> *userIcons);
+    QHash<QUuid, Icon *> *getUserIcons();
+    bool storeUserIcons(QHash<QUuid, Icon *> *userIcons);
 signals:
 
 public slots:
