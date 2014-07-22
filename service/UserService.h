@@ -5,6 +5,7 @@
 #include "model/User.h"
 #include <QSettings>
 #include <QDateTime>
+#include "service/StorageService.h"
 
 class UserService : public QObject
 {
@@ -21,11 +22,10 @@ signals:
 
 public slots:
 private:
-    User myself;
+    StorageService *mStorageService;
+    User *myself;
     QHash<QUuid, User> mFriends;
     QHash<QString, User>  mRecentFriends;
-    void saveSettings();
-    void loadSettings();
 };
 
 #endif // USERSERVICE_H

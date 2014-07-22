@@ -14,13 +14,13 @@ User::User(const QHostAddress &ip, const QString &name, QObject *parent) :
     this->uuid = QUuid::createUuid();
 }
 
-User::User(const QString &userStr, QObject *parent) :
+User::User(const QString &userXMLStr, QObject *parent) :
     QObject(parent)
 {
 //    <user id="[uuid]" ip="[ip]" name="[name]" iconUuid="[iconUuid]" logTime="[logTime]" info="[info]" status="[status]"/>
     QDomDocument userDoc;
     QString errorMsg;
-    userDoc.setContent(userStr, &errorMsg);
+    userDoc.setContent(userXMLStr, &errorMsg);
     if(!errorMsg.isEmpty()) {
         emit parseError(errorMsg);
     }

@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include "model/FileMessage.h"
+#include "model/User.h"
+#include "model/VIcon.h"
 #include <QDir>
 #include <QHash>
 
@@ -16,6 +18,12 @@ public:
 
     QHash<QUuid, FileMessage *> *getSharedFilesMessages();
     bool storeSharedFilesMessages(QHash<QUuid, FileMessage *> *);
+
+    User *getMyself();
+    bool storeMyself(User *myself);
+
+    QHash<QUuid, VIcon *> *getUserIcons();
+    bool storeUserIcons(QHash<QUuid, VIcon *> *userIcons);
 signals:
 
 public slots:

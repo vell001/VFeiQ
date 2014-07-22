@@ -22,7 +22,7 @@ class User : public QObject
 public:
     User(QObject *parent = 0);
     User(const QHostAddress &ip, const QString &name, QObject *parent = 0);
-    User(const QString &userStr, QObject *parent = 0);
+    User(const QString &userXMLStr, QObject *parent = 0);
     User(const User& user);
     enum Status {
         OffLine,

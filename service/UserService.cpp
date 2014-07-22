@@ -1,9 +1,11 @@
 #include "UserService.h"
 
 UserService::UserService(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    mStorageService(StorageService::getService())
 {
-    loadSettings();
+    myself = mStorageService->getMyself();
+    myself->setStatus(User::OnLine);
 }
 
 UserService *UserService::getService(){
@@ -12,31 +14,11 @@ UserService *UserService::getService(){
 }
 
 User *UserService::getMyself(){
-    return &myself;
+    return myself;
 }
 
 QHash<QUuid, User> *UserService::getFriends(){
     return &mFriends;
-}
-
-void UserService::saveSettings(){
-    QSettings setting("vell001", "VFeiQ");
-    setting.beginGroup("userService");
-    setting.setValue("myself", QVariant::fromValue(myself.toString()));
-    setting.endGroup();
-}
-
-void UserService::loadSettings(){
-    QSettings setting("vell001", "VFeiQ");
-    setting.beginGroup("userService");
-    QVariant myselfV = setting.value("myself");
-    if(myselfV.isNull()){
-        myself.setName("vell001");
-    } else {
-        myself = User(myselfV.toString());
-    }
-    myself.setStatus(User::OnLine);
-    setting.endGroup();
 }
 
 QHash<QString, User> *UserService::getRecentFriends(){
@@ -48,5 +30,5 @@ void UserService::insertRecentFriend(const User &user){
 }
 
 UserService::~UserService(){
-    saveSettings();
+    mStorageService->storeMyself(myself);
 }

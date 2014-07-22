@@ -12,8 +12,8 @@ void StorageService::initStorages(){
     if(!baseDir.exists()) {
         baseDir.mkdir(basePath);
     }
-
-    mStorages["mSharedFilesStorage"] = new QFile(basePath + "/mSharedFilesStorage");
+    mStorages["SharedFilesStorage"] = new QFile(basePath + "/sharedFilesStorage");
+    mStorages["MyselfInfoStorage"] = new QFile(basePath + "/myselfInfoStorage");
 }
 
 StorageService::~StorageService(){
@@ -25,7 +25,7 @@ StorageService *StorageService::getService(){
 }
 
 QHash<QUuid, FileMessage *> *StorageService::getSharedFilesMessages(){
-    QFile *mSharedFilesStorage = mStorages["mSharedFilesStorage"];
+    QFile *mSharedFilesStorage = mStorages["SharedFilesStorage"];
     QHash<QUuid, FileMessage *> *fileMessages = 0;
     if(mSharedFilesStorage->open(QFile::ReadOnly | QFile::Text)) {
         QTextStream in(mSharedFilesStorage);
@@ -41,7 +41,7 @@ QHash<QUuid, FileMessage *> *StorageService::getSharedFilesMessages(){
 }
 
 bool StorageService::storeSharedFilesMessages(QHash<QUuid, FileMessage *> *fileMessages){
-    QFile *mSharedFilesStorage = mStorages["mSharedFilesStorage"];
+    QFile *mSharedFilesStorage = mStorages["SharedFilesStorage"];
     if(mSharedFilesStorage->open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(mSharedFilesStorage);
 
@@ -56,4 +56,49 @@ bool StorageService::storeSharedFilesMessages(QHash<QUuid, FileMessage *> *fileM
         qDebug() << "can't open file: " << mSharedFilesStorage->fileName();
         return false;
     }
+}
+
+User *StorageService::getMyself(){
+    QFile *mMyselfInfoStorage = mStorages["MyselfInfoStorage"];
+    User *myself = 0;
+    if(mMyselfInfoStorage->open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream in(mMyselfInfoStorage);
+
+        QString text = in.readAll();
+        myself = new User(text);
+
+        mMyselfInfoStorage->close();
+    } else {
+        myself = new User;
+        myself->setName("vell001");
+        myself->setStatus(User::OnLine);
+        storeMyself(myself);
+    }
+    return myself;
+}
+
+bool StorageService::storeMyself(User *myself){
+    QFile *mMyselfInfoStorage = mStorages["MyselfInfoStorage"];
+    if(mMyselfInfoStorage->open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream out(mMyselfInfoStorage);
+
+        QString text = myself->toString();
+        out << text;
+
+        out.flush();
+        mMyselfInfoStorage->flush();
+        mMyselfInfoStorage->close();
+        return true;
+    } else {
+        qDebug() << "can't open file: " << mMyselfInfoStorage->fileName();
+        return false;
+    }
+}
+
+QHash<QUuid, VIcon *> *StorageService::getUserIcons(){
+
+}
+
+bool StorageService::storeUserIcons(QHash<QUuid, VIcon *> *userIcons){
+
 }
