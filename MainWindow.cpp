@@ -5,6 +5,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     mIconService(IconService::getService()),
+    mUserService(UserService::getService()),
+    mUserInfoService(UserInfoService::getService()),
+    mChatService(ChatService::getService()),
+    mFileShareService(FileShareService::getService()),
     myself(UserService::getService()->getMyself()),
     mFriends(UserService::getService()->getFriends()),
     mChatRecords(ChatRecordService::getService()->getChatRecords()),
@@ -15,17 +19,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //    setWindowFlags(Qt::FramelessWindowHint);
 
-    (*mFriends)[myself->getUuid()] = *(myself);
-
     /* chat service */
-    mChatService = ChatService::getService();
     connect(mChatService, SIGNAL(receiveSuccess(QHostAddress,quint16,ChatMessage)), this, SLOT(chatReceiveSuccess(QHostAddress,quint16,ChatMessage)));
 
-    /* broadcast service*/
-    mBroadcastService = BroadcastService::getService();
-    ChatMessage reqMes(ChatMessage::Request, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
-    mBroadcastService->send(reqMes, QHostAddress("255.255.255.255"));
-    connect(mBroadcastService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(broadcastReceived(QHostAddress,quint16,ChatMessage)));
+    /* iserInfo service*/
+    mUserInfoService->sendMyselfInfo();
+    connect(mUserInfoService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(userInfoReceived(QHostAddress,quint16,ChatMessage)));
+
+    /* user service */
+    connect(mUserService, SIGNAL(myselfInfoChanged(User*)), mUserInfoService, SLOT(sendMyselfInfo()));
+    (*mFriends)[myself->getUuid()] = *(myself);
 
     /* view */
     ui->userNameLabel->setText(myself->getName());
@@ -96,7 +99,7 @@ void MainWindow::openChatForm(const QUuid &receiverUuid){
     }
 }
 
-void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
+void MainWindow::userInfoReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     if(message.getContentType() == ChatMessage::UserXML) { // User info
         User user(message.getContent());
 
@@ -109,14 +112,17 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
         if(!mIconService->containsUserIcon(user.getIconUuid())) {
             mIconService->addIconToGet(user.getIconUuid(), senderIp);
         }
-        if(user.getUuid() != myself->getUuid()) {
+        if(user.getUuid() != myself->getUuid()) { // others info
             if(user.getStatus() == User::OffLine) {
                 MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
                 mMessageDialog->show();
-            } else {
+            } else if(!mFriends->contains(user.getUuid())
+                      || (*mFriends)[user.getUuid()].getStatus() == User::OffLine){
                 MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
                 mMessageDialog->show();
             }
+        } else { // myself info
+            updateMyselfInfoView();
         }
 
         if(mFriends->contains(user.getUuid())) {
@@ -131,7 +137,7 @@ void MainWindow::broadcastReceived(QHostAddress senderIp, quint16 senderPort, Ch
 
         if(message.getMode() == ChatMessage::Request) {
             ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
-            mBroadcastService->send(myselfMessage, senderIp);
+            mUserInfoService->send(myselfMessage, senderIp);
         }
     }
 }
@@ -164,6 +170,12 @@ void MainWindow::updateContentsTreeWidget(){
             }
         }
 //    }
+}
+
+void MainWindow::updateMyselfInfoView(){
+    ui->userImage->setIcon(mIconService->getUserIconByUuid(myself->getIconUuid()));
+    ui->userNameLabel->setText(myself->getName());
+    ui->signatureLabel->setText(myself->getInfo());
 }
 
 void MainWindow::chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
@@ -240,8 +252,7 @@ void MainWindow::closeEvent ( QCloseEvent * event ){
             (*mChatForms)[key]->close();
         }
         myself->setStatus(User::OffLine);
-        ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString());
-        mBroadcastService->send(myselfMessage, QHostAddress("255.255.255.255"));
+        mUserInfoService->sendMyselfInfo();
     }
 }
 
@@ -320,7 +331,7 @@ void MainWindow::on_setShareFilesButton_clicked()
 /* recent friends */
 void MainWindow::updateRecentFriendsListWidget() {
     ui->recentContentsListWidget->clear();
-    QHash<QString, User> *recentFriends = UserService::getService()->getRecentFriends();
+    QHash<QString, User> *recentFriends = mUserService->getRecentFriends();
 
     QList<QString> keys = recentFriends->keys();
 
@@ -351,6 +362,12 @@ void MainWindow::doubleClickedRecentContents(QModelIndex index){
     openChatForm(userUuid);
 }
 
+void MainWindow::on_cleanChatRecordButton_clicked()
+{
+    mUserService->getRecentFriends()->clear();
+    updateRecentFriendsListWidget();
+}
+
 /* end of recent friends */
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -372,4 +389,13 @@ void MainWindow::on_settingButton_clicked()
     SettingDialog *settingDialog = SettingDialog::getDialog();
     settingDialog->setCurrentIndex(SettingDialog::UserInfo);
     settingDialog->show();
+}
+
+void MainWindow::on_statusComboBox_currentIndexChanged(int index)
+{
+    myself->setStatus((User::Status)index);
+    mUserService->saveMyself();
+
+    ChatMessage myselfMsg(ChatMessage::Response, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
+    mUserInfoService->broadcast(myselfMsg);
 }

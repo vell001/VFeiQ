@@ -19,7 +19,7 @@ public:
     User *getMyself();
     void saveMyself();
 signals:
-
+    void myselfInfoChanged(User *myself);
 public slots:
 private:
     StorageService *mStorageService;

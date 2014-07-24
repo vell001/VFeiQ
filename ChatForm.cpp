@@ -17,7 +17,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
 
     setAttribute(Qt::WA_DeleteOnClose);
     this->mChatService = ChatService::getService();
-    this->mFileMsgService = BroadcastService::getService();
+    this->mFileMsgService = FileMessageService::getService();
 
     ui->userIcon->setIcon(mIconService->getUserIconByUuid(this->receiver->getIconUuid()));
     ui->userIcon->setIconSize(QSize(40, 40));

@@ -7,7 +7,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
     mUserService(UserService::getService()),
     myself(UserService::getService()->getMyself()),
     mIconService(IconService::getService()),
-    mBroadcastService(BroadcastService::getService())
+    mBroadcastService(UserInfoService::getService())
 {
     ui->setupUi(this);
     updateUserInfoView();
@@ -71,7 +71,4 @@ void SettingDialog::on_applyUserInfoButton_clicked()
 
     myself->setIconUuid(QUuid(ui->userNormalIconComboBox->itemData(ui->userNormalIconComboBox->currentIndex()).toString()));
     mUserService->saveMyself();
-
-    ChatMessage myselfMsg(ChatMessage::Response, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
-    mBroadcastService->broadcast(myselfMsg);
 }

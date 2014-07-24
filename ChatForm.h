@@ -9,7 +9,7 @@
 
 #include <QWidget>
 #include "service/ChatService.h"
-#include "service/BroadcastService.h"
+#include "service/FileMessageService.h"
 #include <QListWidgetItem>
 #include <QKeyEvent>
 #include <model/User.h>
@@ -114,7 +114,7 @@ private:
     FileSender *mFileSender;
     FileReceiver *mFileReceiver;
     FileMessage *mFileMessage;
-    BroadcastService *mFileMsgService;
+    FileMessageService *mFileMsgService;
     int fileSendRow;
     int fileReceiveRow;
     QString saveDirName;

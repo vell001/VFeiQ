@@ -1,9 +1,8 @@
 #include "IconService.h"
 
 IconService::IconService(QObject *parent) :
-    QObject(parent),
+    UdpService(5732, parent),
     mStorageService(StorageService::getService()),
-    mIconInfoService(BroadcastService::getService(5732)),
     myself(UserService::getService()->getMyself()),
     mFileSender(0),
     mFileReceiver(0),
@@ -13,7 +12,7 @@ IconService::IconService(QObject *parent) :
     normalUserIcons(new QHash<QUuid, Icon *>),
     customUserIcons(new QHash<QUuid, Icon *>)
 {
-    connect(mIconInfoService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(iconInfoReceived(QHostAddress,quint16,ChatMessage)));
+    connect(this, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(iconInfoReceived(QHostAddress,quint16,ChatMessage)));
     updateCustomUserIconsFromDir();
     initNormalUserIcons();
 }
@@ -60,7 +59,7 @@ void IconService::getIconFromAddress(const QUuid &uuid, const QHostAddress &addr
     mFileReceiver->start();
 
     ChatMessage iconInfoMsg(uuid, ChatMessage::Request, myself->getUuid(), uuid.toString(), ChatMessage::IconUuid);
-    mIconInfoService->send(iconInfoMsg, address);
+    UdpService::send(iconInfoMsg, address);
 }
 
 void IconService::iconInfoReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
@@ -78,7 +77,7 @@ void IconService::iconInfoReceived(QHostAddress senderIp, quint16 senderPort, Ch
                 mFileSender->send();
             } else { // not exist
                 ChatMessage msg(ChatMessage::Response, myself->getUuid(), "not exist", ChatMessage::Text);
-                mIconInfoService->send(msg, senderIp);
+                UdpService::send(msg, senderIp);
             }
         }
     } else if(message.getMode() == ChatMessage::Response){

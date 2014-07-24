@@ -8,10 +8,10 @@
 #include <model/FileSender.h>
 #include <model/FileReceiver.h>
 #include "StorageService.h"
-#include "BroadcastService.h"
+#include "UdpService.h"
 #include "UserService.h"
 
-class IconService : public QObject
+class IconService : public UdpService
 {
     Q_OBJECT
 public:
@@ -38,7 +38,6 @@ private:
     explicit IconService(QObject *parent = 0);
     User *myself;
     StorageService *mStorageService;
-    BroadcastService *mIconInfoService;
     QHash<QUuid, Icon *> *customUserIcons;
     QHash<QUuid, Icon *> *normalUserIcons;
     QDir customIconFilesDir;

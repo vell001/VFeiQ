@@ -24,11 +24,11 @@ public:
     User(const QString &userXMLStr, QObject *parent = 0);
     User(const User& user);
     enum Status {
-        OffLine,
         OnLine,
         Leaving,
         Busy,
-        Hiding
+        Hiding,
+        OffLine
     };
     /*
      * 0: 离线

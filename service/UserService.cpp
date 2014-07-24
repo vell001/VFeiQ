@@ -19,6 +19,7 @@ User *UserService::getMyself(){
 
 void UserService::saveMyself(){
     mStorageService->storeMyself(myself);
+    emit myselfInfoChanged(myself);
 }
 
 QHash<QUuid, User> *UserService::getFriends(){

@@ -384,7 +384,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="cleanButton">
+           <widget class="QPushButton" name="cleanChatRecordButton">
             <property name="text">
              <string>Clean</string>
             </property>

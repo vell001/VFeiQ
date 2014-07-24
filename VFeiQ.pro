@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     model/ChatMessage.cpp \
     model/FriendSet.cpp \
     service/ChatService.cpp \
-    service/BroadcastService.cpp \
     model/User.cpp \
     service/UdpService.cpp \
     service/UserService.cpp \
@@ -34,14 +33,15 @@ SOURCES += main.cpp\
     service/FileShareService.cpp \
     SetShareFilesDialog.cpp \
     model/Icon.cpp \
-    SettingDialog.cpp
+    SettingDialog.cpp \
+    service/FileMessageService.cpp \
+    service/UserInfoService.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
     model/ChatMessage.h \
     model/FriendSet.h \
     service/ChatService.h \
-    service/BroadcastService.h \
     model/User.h \
     service/UdpService.h \
     service/UserService.h \
@@ -57,7 +57,9 @@ HEADERS  += MainWindow.h \
     service/FileShareService.h \
     SetShareFilesDialog.h \
     model/Icon.h \
-    SettingDialog.h
+    SettingDialog.h \
+    service/FileMessageService.h \
+    service/UserInfoService.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \

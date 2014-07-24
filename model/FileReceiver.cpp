@@ -53,10 +53,11 @@ void FileReceiver::updateServerProgress(){
 
         if((tcpServerConnection->bytesAvailable() >= uuidSize)
                 && (uuidSize != 0))
-        {  //接收文件名，并建立文件
+        {
             QString uuidStr;
             in >> uuidStr;
             if(QUuid(uuidStr) != uuid){
+                qDebug() << "receive a unexcepted file";
                 tcpServerConnection->close();
                 return;
             } else {
@@ -134,4 +135,3 @@ void FileReceiver::setFile(QFile *file){
     delete this->file;
     this->file = file;
 }
-

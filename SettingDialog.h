@@ -4,7 +4,7 @@
 #include <QDialog>
 #include "service/UserService.h"
 #include "service/IconService.h"
-#include "service/BroadcastService.h"
+#include "service/UserInfoService.h"
 
 namespace Ui {
 class SettingDialog;
@@ -37,7 +37,7 @@ private:
     void updateUserInfoView();
     IconService *mIconService;
     UserService *mUserService;
-    BroadcastService *mBroadcastService;
+    UserInfoService *mBroadcastService;
 };
 
 #endif // SETTINGDIALOG_H

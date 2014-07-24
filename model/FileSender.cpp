@@ -54,7 +54,6 @@ void FileSender::start(){
 
     QDataStream sendOut(&outBlock,QIODevice::WriteOnly);
     sendOut.setVersion(QDataStream::Qt_4_8);
-//    QString currentFileName = fileName.right(fileName.size() - fileName.lastIndexOf('/')-1);
     sendOut << qint64(0) << qint64(0) << uuid.toString();
     qDebug() << "senduuid: " << uuid.toString();
     //依次写入总大小信息空间，文件名大小信息空间，文件名---仅是文件名不含路径，没必要含路径

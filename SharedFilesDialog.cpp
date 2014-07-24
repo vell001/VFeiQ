@@ -70,6 +70,8 @@ void SharedFilesDialog::fileReceiveProgress(qint64 maximum, qint64 value){
 }
 
 void SharedFilesDialog::fileReceiveEnd(qint64 totalBytes){
+    delete mFileReceiver;
+    mFileReceiver = 0;
     if(fileReceiveRow+1 < selectedList.size()) {
         fileReceiveRow ++;
         delete mFileMessage;
@@ -77,7 +79,6 @@ void SharedFilesDialog::fileReceiveEnd(qint64 totalBytes){
         mFileMessage = new FileMessage(QFileInfo((*mFileMessages)[fUuid]->getFileFullName()), fUuid);
 
         // start receiver
-        delete mFileReceiver;
         mFileMessage->setTransferPort(1214);
         mFileReceiver = new FileReceiver(new QFile(saveDirName+"/"+mFileMessage->getFileName()),
                                          QHostAddress::Any,

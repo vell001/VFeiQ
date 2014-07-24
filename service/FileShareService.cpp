@@ -1,8 +1,7 @@
 #include "FileShareService.h"
 
-FileShareService::FileShareService(QObject *parent) :
-    QObject(parent),
-    mBroadcastService(BroadcastService::getService(5103)),
+FileShareService::FileShareService(quint16 chatport, QObject *parent) :
+    UdpService(chatport, parent),
     mSharedFilesMessages(0),
     mFileSender(0),
     sender(UserService::getService()->getMyself())
@@ -11,24 +10,20 @@ FileShareService::FileShareService(QObject *parent) :
 }
 
 void FileShareService::listen(){
-    connect(mBroadcastService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(received(QHostAddress,quint16,ChatMessage)));
+    connect(this, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SLOT(messageReceived(QHostAddress,quint16,ChatMessage)));
 }
 
 FileShareService *FileShareService::getService(){
-    static FileShareService service;
+    static FileShareService service(5103);
     return &service;
-}
-
-void FileShareService::send(ChatMessage &message, const QHostAddress &receiverIp){
-    mBroadcastService->send(message, receiverIp);
 }
 
 void FileShareService::sendSharedFilesRequest(const QHostAddress &receiverIp){
     ChatMessage message(ChatMessage::Request, sender->getUuid(), "requestSharedFiles");
-    mBroadcastService->send(message, receiverIp);
+    UdpService::send(message, receiverIp);
 }
 
-void FileShareService::received(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
+void FileShareService::messageReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message){
     if(message.getMode() == ChatMessage::Request) {
         if(message.getContentType() == ChatMessage::Text) {
             if(message.getContent() == "requestSharedFiles") { // response my shared files
@@ -36,7 +31,7 @@ void FileShareService::received(QHostAddress senderIp, quint16 senderPort, ChatM
                 mSharedFilesMessages = StorageService::getService()->getSharedFilesMessages();
                 QString fileMessagesXMLStr = FileMessage::fileMessagesToXMLStr(*mSharedFilesMessages);
                 ChatMessage respMessage(ChatMessage::Response, sender->getUuid(), fileMessagesXMLStr, ChatMessage::FilesXML);
-                mBroadcastService->send(respMessage, senderIp);
+                UdpService::send(respMessage, senderIp);
             }
         } else if(message.getContentType() == ChatMessage::FileXML) { // send zhe file
             FileMessage fMsg(message.getContent());

@@ -16,7 +16,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QTableWidget>
-#include "service/BroadcastService.h"
+#include "service/UserInfoService.h"
 #include "service/ChatService.h"
 #include "service/UserService.h"
 #include "model/User.h"
@@ -50,7 +50,7 @@ public:
 public slots:
     void doubleClickedContents(QModelIndex);
     void doubleClickedRecentContents(QModelIndex);
-    void broadcastReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
+    void userInfoReceived(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void fMsgReceiveSuccess(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 
@@ -73,11 +73,17 @@ private slots:
 
     void on_settingButton_clicked();
 
+    void on_cleanChatRecordButton_clicked();
+
+    void on_statusComboBox_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
-    BroadcastService *mBroadcastService;
+    UserInfoService *mUserInfoService;
     ChatService *mChatService;
     IconService *mIconService;
+    UserService *mUserService;
+    FileShareService *mFileShareService;
     User *myself;
     void updateContentsTreeWidget();
 
@@ -100,6 +106,7 @@ private:
     QListWidget *searchResultWidget;
 
     void updateRecentFriendsListWidget();
+    void updateMyselfInfoView();
 };
 
 #endif // MAINWINDOW_H
