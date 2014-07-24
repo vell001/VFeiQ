@@ -4,34 +4,36 @@
 #include <QObject>
 #include <QUuid>
 #include <QIcon>
+#include <QFileInfo>
+#include <QtXml>
+#include <QHostAddress>
 
 class Icon : public QObject
 {
     Q_OBJECT
 public:
     explicit Icon(QObject *parent = 0);
-    explicit Icon(const QString &iconXMLStr, QObject *parent = 0);
-    explicit Icon(const QUuid &uuid, const QString &fileFullName, QObject *parent = 0);
+    explicit Icon(const QString &iconXMLStr, const QHostAddress &senderIp, QObject *parent = 0);
+    explicit Icon(const QFileInfo &fileInfo, const QUuid &uuid = QUuid::createUuid(), QObject *parent = 0);
 
-    QString toXMLString();
+    QString toXMLString(int indent = -1);
+    static QHash<QUuid, Icon *> *parseIconsFromXMLString(const QString &XMLStr);
+    static QString IconsToXMLString(const QHash<QUuid, Icon *> &icons, int indent = -1);
 
     QUuid getUuid();
     QIcon getIcon();
-    QString getFileName();
-    QString getFileFullName();
+    QFileInfo getFileInfo();
 
     void setUuid(const QUuid &uuid);
     void setIcon(const QIcon &icon);
-    void setFileName(const QString &fileName);
-    void setFileFullName(const QString &fileFullName);
+    void setFileInfo(const QFileInfo &fileInfo);
 signals:
-
+    void parseError(QString errorMessage);
 public slots:
 private:
     QUuid uuid;
     QIcon icon;
-    QString fileName;
-    QString fileFullName;
+    QFileInfo fileInfo;
 };
 
 #endif // ICON_H

@@ -30,6 +30,7 @@
 #include <QFile>
 #include <QMenu>
 #include "SetShareFilesDialog.h"
+#include "SettingDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -67,6 +68,10 @@ private slots:
     void on_setShareFilesButton_clicked();
 
     void on_tabWidget_currentChanged(int index);
+
+    void on_userImage_clicked();
+
+    void on_settingButton_clicked();
 
 private:
     Ui::MainWindow *ui;

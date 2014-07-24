@@ -14,7 +14,6 @@
 #include <QDateTime>
 #include <QHostAddress>
 #include <QtXml>
-#include "service/IconService.h"
 
 class User : public QObject
 {
@@ -58,6 +57,8 @@ public:
     void setStatus(Status status);
 
     User &operator=(const User &user);
+    bool operator== ( const User & other ) const;
+    bool operator!= ( const User & other ) const;
 signals:
     void parseError(QString errorMessage);
 public slots:

@@ -97,9 +97,35 @@ bool StorageService::storeMyself(User *myself){
 }
 
 QHash<QUuid, Icon *> *StorageService::getUserIcons(){
+    QFile *mUserIconsStorage = mStorages["UserIconsStorage"];
+    QHash<QUuid, Icon *> *icons = 0;
+    if(mUserIconsStorage->open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream in(mUserIconsStorage);
 
+        QString text = in.readAll();
+        icons = Icon::parseIconsFromXMLString(text);
+
+        mUserIconsStorage->close();
+    } else {
+       icons = new QHash<QUuid, Icon *>;
+    }
+    return icons;
 }
 
 bool StorageService::storeUserIcons(QHash<QUuid, Icon *> *userIcons){
+    QFile *mUserIconsStorage = mStorages["UserIconsStorage"];
+    if(mUserIconsStorage->open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream out(mUserIconsStorage);
 
+        QString text = Icon::IconsToXMLString(*userIcons, 1);
+        out << text;
+
+        out.flush();
+        mUserIconsStorage->flush();
+        mUserIconsStorage->close();
+        return true;
+    } else {
+        qDebug() << "can't open file: " << mUserIconsStorage->fileName();
+        return false;
+    }
 }

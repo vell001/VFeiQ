@@ -17,6 +17,7 @@ public:
     QHash<QString, User> *getRecentFriends();
     void insertRecentFriend(const User &user);
     User *getMyself();
+    void saveMyself();
 signals:
 
 public slots:

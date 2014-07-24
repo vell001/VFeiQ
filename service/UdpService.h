@@ -14,6 +14,7 @@ public:
     explicit UdpService(quint16 chatPort, QObject *parent = 0);
     ~UdpService();
     void send(ChatMessage &message, const QHostAddress &receiverIp);
+    void broadcast(ChatMessage &message);
 signals:
     void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
     void serviceError(QString errorMesssage);

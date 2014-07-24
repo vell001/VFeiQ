@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>userIcons/{7be75ba3-b422-4370-bfd2-9887a529746c}.png</file>
+        <file>userIcons/{9c8484b0-50ae-47af-a07a-413b6841b648}.png</file>
+        <file>userIcons/{73f23740-55f5-4099-8225-526e69da5f25}.png</file>
+        <file>userIcons/{92b143e0-dd10-44e3-ae41-180bb8f2b286}.png</file>
+        <file>userIcons/{311cc052-60d5-45c4-9bb6-c61b905190e6}.png</file>
+        <file>userIcons/{317b78d6-be48-439e-b194-0c443c6adddf}.png</file>
+        <file>userIcons/{3976bd1a-6c78-4f39-ac62-1c8a17f0fe20}.png</file>
+        <file>userIcons/{9050b401-2ef3-40d1-891b-dd9d06646212}.png</file>
+        <file>userIcons/{604479c4-fdc6-4dfb-87db-77f293f505b3}.png</file>
+        <file>userIcons/{23077463-f798-4ca9-b2b0-a4a1600f095f}.png</file>
+        <file>userIcons/{ab86c658-f137-4c21-8f8a-fd5a9a099d11}.png</file>
+        <file>userIcons/{b4c2901a-c551-45e8-b0be-fed74c95472a}.png</file>
+        <file>userIcons/{b159d502-9010-4b49-80be-1308f4e7f843}.png</file>
+        <file>userIcons/{c33b6619-fe7f-45e2-ad27-e7d2b201e6de}.png</file>
+        <file>userIcons/{c326f88c-a629-431a-bdff-cd99bde074eb}.png</file>
+        <file>userIcons/{c6264b6b-d1f2-4c16-9a5e-ee9255ea3315}.png</file>
+        <file>userIcons/{cf945356-1499-4be4-b327-d88b5e359757}.png</file>
+        <file>userIcons/{d1c1da72-5c86-474c-b3c2-66920421f517}.png</file>
+        <file>userIcons/{e7994781-31b2-42ad-b16d-893fe52d5eb4}.png</file>
+        <file>userIcons/{f62bae8a-b26f-42ad-8aca-0d9bf9292563}.png</file>
+    </qresource>
+</RCC>

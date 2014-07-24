@@ -6,7 +6,8 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     ui(new Ui::ChatForm),
     receiver(receiver),
     sender(UserService::getService()->getMyself()),
-    mChatRecords(ChatRecordService::getService()->getChatRecordsByUserUuid(receiver->getUuid(), ChatRecord::NotRead))
+    mChatRecords(ChatRecordService::getService()->getChatRecordsByUserUuid(receiver->getUuid(), ChatRecord::NotRead)),
+    mIconService(IconService::getService())
 {
     ui->setupUi(this);
 
@@ -18,7 +19,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     this->mChatService = ChatService::getService();
     this->mFileMsgService = BroadcastService::getService();
 
-    ui->userIcon->setIcon(mIconService->getIconByUuid(this->receiver->getIconUuid()));
+    ui->userIcon->setIcon(mIconService->getUserIconByUuid(this->receiver->getIconUuid()));
     ui->userIcon->setIconSize(QSize(40, 40));
 
     ui->usernameLabel->setText(this->receiver->getName());

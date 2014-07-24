@@ -15,6 +15,7 @@ BroadcastService::BroadcastService(quint16 chatPort, QObject *parent) :
 
 void BroadcastService::listen(){
     connect(mUdpService, SIGNAL(received(QHostAddress,quint16,ChatMessage)), this, SIGNAL(received(QHostAddress,quint16,ChatMessage)));
+
 }
 
 BroadcastService *BroadcastService::getService(){
@@ -32,4 +33,8 @@ BroadcastService::~BroadcastService(){
 
 void BroadcastService::send(ChatMessage &message, const QHostAddress &receiverIp){
     mUdpService->send(message, receiverIp);
+}
+
+void BroadcastService::broadcast(ChatMessage &message){
+    mUdpService->send(message, QHostAddress("255.255.255.255"));
 }

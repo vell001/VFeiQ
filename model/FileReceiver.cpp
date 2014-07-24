@@ -56,7 +56,6 @@ void FileReceiver::updateServerProgress(){
         {  //接收文件名，并建立文件
             QString uuidStr;
             in >> uuidStr;
-            qDebug() << "uuidStr: " << uuidStr;
             if(QUuid(uuidStr) != uuid){
                 tcpServerConnection->close();
                 return;

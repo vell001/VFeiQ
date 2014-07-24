@@ -28,7 +28,8 @@ public:
         Text,
         FileXML,
         FilesXML,
-        UserXML
+        UserXML,
+        IconUuid
     };
 
     ChatMessage(Mode mode, const QUuid &senderUuid, const QString &content,

@@ -58,6 +58,28 @@ User &User::operator=(const User &user)
     return *this;
 }
 
+bool User::operator== ( const User & user ) const{
+    if(uuid == user.uuid
+       && ip == user.ip
+       && name == user.name
+       && iconUuid == user.iconUuid
+       && logTime == user.logTime
+       && info == user.info
+       && status == user.status) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool User::operator!= ( const User & user ) const{
+    if(*this == user) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 QString User::toString(){
 //    <user id="[uuid]" ip="[ip]" name="[name]" iconUuid="[iconUuid]" logTime="[logTime]" info="[info]" status="[status]"/>
     QDomDocument userDoc;

@@ -17,7 +17,7 @@ public:
     static BroadcastService *getService(quint16 chatPort);
     ~BroadcastService();
     void send(ChatMessage &message, const QHostAddress &receiverIp);
-
+    void broadcast(ChatMessage &message);
 signals:
     void received(QHostAddress senderIp, quint16 senderPort, ChatMessage message);
 public slots:

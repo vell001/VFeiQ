@@ -32,6 +32,10 @@ void UdpService::send(ChatMessage &message, const QHostAddress &receiverIp){
     mUdpSocket->flush();
 }
 
+void UdpService::broadcast(ChatMessage &message){
+    send(message, QHostAddress("255.255.255.255"));
+}
+
 void UdpService::readyRead (){
     QByteArray buffer;
     buffer.resize(mUdpSocket->pendingDatagramSize());

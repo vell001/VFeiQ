@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     service/StorageService.cpp \
     service/FileShareService.cpp \
     SetShareFilesDialog.cpp \
-    model/Icon.cpp
+    model/Icon.cpp \
+    SettingDialog.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -55,14 +56,17 @@ HEADERS  += MainWindow.h \
     service/StorageService.h \
     service/FileShareService.h \
     SetShareFilesDialog.h \
-    model/Icon.h
+    model/Icon.h \
+    SettingDialog.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
     MessageDialog.ui \
     SharedFilesDialog.ui \
-    SetShareFilesDialog.ui
+    SetShareFilesDialog.ui \
+    SettingDialog.ui
 
 RESOURCES += \
     skins.qrc \
-    images.qrc
+    images.qrc \
+    normalUserIcons.qrc
