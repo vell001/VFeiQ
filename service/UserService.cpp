@@ -5,7 +5,7 @@ UserService::UserService(QObject *parent) :
     mStorageService(StorageService::getService())
 {
     myself = mStorageService->getMyself();
-    myself->setStatus(User::OnLine);
+    myself->setStatus(User::Online);
 }
 
 UserService *UserService::getService(){

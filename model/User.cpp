@@ -123,6 +123,27 @@ QString User::getInfo(){
 User::Status User::getStatus(){
     return this->status;
 }
+QString User::getStatusStr(){
+    switch (status) {
+    case Online:
+        return "Online";
+        break;
+    case Leaving:
+        return "Leaving";
+        break;
+    case Busy:
+        return "Busy";
+        break;
+    case Hiding:
+        return "Hiding";
+        break;
+    case Offline:
+        return "Offline";
+        break;
+    default:
+        break;
+    }
+}
 
 void User::setUuid(const QUuid &uuid){
     this->uuid = uuid;

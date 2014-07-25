@@ -31,6 +31,7 @@
 #include <QMenu>
 #include "SetShareFilesDialog.h"
 #include "SettingDialog.h"
+#include "GamesDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -76,6 +77,8 @@ private slots:
     void on_cleanChatRecordButton_clicked();
 
     void on_statusComboBox_currentIndexChanged(int index);
+
+    void on_gamesButton_clicked();
 
 private:
     Ui::MainWindow *ui;

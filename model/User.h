@@ -24,11 +24,11 @@ public:
     User(const QString &userXMLStr, QObject *parent = 0);
     User(const User& user);
     enum Status {
-        OnLine,
+        Online,
         Leaving,
         Busy,
         Hiding,
-        OffLine
+        Offline
     };
     /*
      * 0: 离线
@@ -47,6 +47,7 @@ public:
     QDateTime getLogTime();
     QString getInfo();
     Status getStatus();
+    QString getStatusStr();
 
     void setUuid(const QUuid &uuid);
     void setIp(const QHostAddress &ip);

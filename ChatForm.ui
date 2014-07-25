@@ -324,7 +324,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButton_8">
+               <widget class="QToolButton" name="grapScreenButton">
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -375,7 +375,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButton_10">
+               <widget class="QToolButton" name="wordShowButton">
                 <property name="text">
                  <string>...</string>
                 </property>

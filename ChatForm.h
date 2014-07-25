@@ -33,6 +33,7 @@
 #include "MessageDialog.h"
 #include <QDesktopServices>
 #include "SharedFilesDialog.h"
+#include "FullScreenWidget.h"
 
 namespace Ui {
 class ChatForm;
@@ -91,6 +92,8 @@ private slots:
 
     void on_sharedFilesButton_clicked();
 
+    void on_grapScreenButton_clicked();
+
 signals:
     void closed(QUuid receiverUuid);
 private:
@@ -130,6 +133,9 @@ private:
     int shakeMaxLimitSpace;
     void startShake();
 
+    // screen shot
+    QPixmap shotScreenFullPixmap; //全屏图片
+    FullScreenWidget *shotScreenFullWidget;
 };
 
 #endif // CHATFORM_H

@@ -113,11 +113,11 @@ void MainWindow::userInfoReceived(QHostAddress senderIp, quint16 senderPort, Cha
             mIconService->addIconToGet(user.getIconUuid(), senderIp);
         }
         if(user.getUuid() != myself->getUuid()) { // others info
-            if(user.getStatus() == User::OffLine) {
+            if(user.getStatus() == User::Offline) {
                 MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
                 mMessageDialog->show();
             } else if(!mFriends->contains(user.getUuid())
-                      || (*mFriends)[user.getUuid()].getStatus() == User::OffLine){
+                      || (*mFriends)[user.getUuid()].getStatus() == User::Offline){
                 MessageDialog *mMessageDialog = new MessageDialog(tr("上线提醒"), QString(tr("%1上线了~")).arg(user.getName()), logoIcon);
                 mMessageDialog->show();
             }
@@ -154,7 +154,10 @@ void MainWindow::updateContentsTreeWidget(){
         for(it = mFriends->begin(); it != mFriends->end(); it++) {
             user = &it.value();
             QTreeWidgetItem *cItem = new QTreeWidgetItem(item);
-            cItem->setText(0,QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
+            cItem->setText(0,QString("%1 [%2]\r\n%3")
+                           .arg(user->getName())
+                           .arg(user->getStatusStr())
+                           .arg(user->getIp().toString()));
             cItem->setData(0, Qt::UserRole, user->getUuid().toString());
             cItem->setIcon(0, mIconService->getUserIconByUuid(user->getIconUuid()));
             if(it.key() == myself->getUuid()) {
@@ -162,7 +165,7 @@ void MainWindow::updateContentsTreeWidget(){
             }
 
             switch (user->getStatus()) {
-            case User::OffLine:
+            case User::Offline:
                 cItem->setBackgroundColor(0, QColor("#ADADAD"));
                 break;
             default:
@@ -251,7 +254,7 @@ void MainWindow::closeEvent ( QCloseEvent * event ){
         foreach (QUuid key, mChatForms->keys()) {
             (*mChatForms)[key]->close();
         }
-        myself->setStatus(User::OffLine);
+        myself->setStatus(User::Offline);
         mUserInfoService->sendMyselfInfo();
     }
 }
@@ -348,7 +351,7 @@ void MainWindow::updateRecentFriendsListWidget() {
         item->setData(Qt::UserRole, user->getUuid().toString());
 
         switch (user->getStatus()) {
-        case User::OffLine:
+        case User::Offline:
             item->setBackgroundColor(QColor("#ADADAD"));
             break;
         default:
@@ -398,4 +401,10 @@ void MainWindow::on_statusComboBox_currentIndexChanged(int index)
 
     ChatMessage myselfMsg(ChatMessage::Response, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
     mUserInfoService->broadcast(myselfMsg);
+}
+
+void MainWindow::on_gamesButton_clicked()
+{
+    GamesDialog *gamesDialog = new GamesDialog;
+    gamesDialog->show();
 }

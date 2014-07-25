@@ -72,7 +72,7 @@ User *StorageService::getMyself(){
     } else {
         myself = new User;
         myself->setName("vell001");
-        myself->setStatus(User::OnLine);
+        myself->setStatus(User::Online);
         storeMyself(myself);
     }
     return myself;

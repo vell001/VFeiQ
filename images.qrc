@@ -27,5 +27,7 @@
         <file>images/saveFiles.png</file>
         <file>images/contacts.png</file>
         <file>images/groups.png</file>
+        <file>images/appstore.png</file>
+        <file>images/wordShow.png</file>
     </qresource>
 </RCC>

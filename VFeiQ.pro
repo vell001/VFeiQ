@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network xml
+QT       += core gui network xml webkit
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webkitwidgets
 
 TARGET = VFeiQ
 TEMPLATE = app
@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     model/Icon.cpp \
     SettingDialog.cpp \
     service/FileMessageService.cpp \
-    service/UserInfoService.cpp
+    service/UserInfoService.cpp \
+    GamesDialog.cpp \
+    FullScreenWidget.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -59,16 +61,26 @@ HEADERS  += MainWindow.h \
     model/Icon.h \
     SettingDialog.h \
     service/FileMessageService.h \
-    service/UserInfoService.h
+    service/UserInfoService.h \
+    GamesDialog.h \
+    FullScreenWidget.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
     MessageDialog.ui \
     SharedFilesDialog.ui \
     SetShareFilesDialog.ui \
-    SettingDialog.ui
+    SettingDialog.ui \
+    GamesDialog.ui
 
 RESOURCES += \
     skins.qrc \
     images.qrc \
     normalUserIcons.qrc
+
+#DESTDIR = ./bin
+
+#temp-directory sources
+#OBJECTS_DIR = ./.objtmp
+#MOC_DIR = ./.moctmp
+#UI_DIR  += ./.uitmp
