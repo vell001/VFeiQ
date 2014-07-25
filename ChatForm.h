@@ -34,6 +34,7 @@
 #include <QDesktopServices>
 #include "SharedFilesDialog.h"
 #include "ScreenshotsWidget.h"
+#include "FacesDialog.h"
 
 namespace Ui {
 class ChatForm;
@@ -67,6 +68,10 @@ private slots:
     void fileReceiveProgress(qint64,qint64);
 
     void shakeTimeOut();
+
+    void facesClicked(Image image);
+
+    void screenshotsFinish(QPixmap);
 
     void on_closeButton_clicked();
 
@@ -134,8 +139,10 @@ private:
     void startShake();
 
     // screen shot
-    QPixmap ScreenshotsPixmap; //全屏图片
     ScreenshotsWidget *mScreenshotsWidget;
+
+    // faces
+    FacesDialog mFacesDialog;
 };
 
 #endif // CHATFORM_H

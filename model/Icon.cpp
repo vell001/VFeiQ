@@ -18,6 +18,7 @@ Icon::Icon(const QString &iconXMLStr, const QHostAddress &senderIp, QObject *par
     QDomElement iconE = iconDoc.firstChildElement();
     uuid = QUuid(iconE.attribute("id"));
     fileInfo = QFileInfo(iconE.attribute("fileFullName"));
+    icon = QIcon(fileInfo.filePath());
 }
 
 Icon::Icon(const QFileInfo &fileInfo, const QUuid &uuid, QObject *parent) :

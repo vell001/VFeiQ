@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     service/FileMessageService.cpp \
     service/UserInfoService.cpp \
     GamesDialog.cpp \
-    ScreenshotsWidget.cpp
+    ScreenshotsWidget.cpp \
+    model/Image.cpp \
+    FacesDialog.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -63,7 +65,9 @@ HEADERS  += MainWindow.h \
     service/FileMessageService.h \
     service/UserInfoService.h \
     GamesDialog.h \
-    ScreenshotsWidget.h
+    ScreenshotsWidget.h \
+    model/Image.h \
+    FacesDialog.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
@@ -71,12 +75,14 @@ FORMS    += MainWindow.ui \
     SharedFilesDialog.ui \
     SetShareFilesDialog.ui \
     SettingDialog.ui \
-    GamesDialog.ui
+    GamesDialog.ui \
+    FacesDialog.ui
 
 RESOURCES += \
     skins.qrc \
     images.qrc \
-    normalUserIcons.qrc
+    normalUserIcons.qrc \
+    faces.qrc
 
 #DESTDIR = ./bin
 

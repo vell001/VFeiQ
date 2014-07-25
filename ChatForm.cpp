@@ -60,6 +60,10 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     shakeMaxLimitTimes = 12;
     shakeMaxLimitSpace = 5;
     connect(mShakeTimer, SIGNAL(timeout()),this, SLOT(shakeTimeOut()));
+
+    connect(mScreenshotsWidget, SIGNAL(finishPixmap(QPixmap)), this, SLOT(screenshotsFinish(QPixmap)));
+
+    connect(&mFacesDialog, SIGNAL(clicked(Image)), this, SLOT(facesClicked(Image)));
 }
 
 ChatForm::~ChatForm()
@@ -177,10 +181,6 @@ void ChatForm::on_colorButton_clicked()
     saveSetting();
 }
 
-void ChatForm::on_facesButton_clicked()
-{
-
-}
 
 void ChatForm::loadSetting(){
     QSettings setting("vell001", "VFeiQ");
@@ -477,4 +477,21 @@ void ChatForm::on_grapScreenButton_clicked()
     QPixmap pixmap = mScreenshotsWidget->getFullScreenPixmap();
     mScreenshotsWidget->show();
     mScreenshotsWidget->loadBackgroundPixmap(pixmap);
+}
+
+void ChatForm::screenshotsFinish(QPixmap pixmap){
+    Image img = (Image)pixmap.toImage();
+    ui->messageTextEdit->setHtml(ui->messageTextEdit->toHtml()+"<img src=\"data:image/png;base64,"+img.toBase64Data()+"\"/>");
+}
+
+void ChatForm::on_facesButton_clicked()
+{
+    mFacesDialog.setParent(this);
+    mFacesDialog.setGeometry(ui->facesButton->geometry().x(),ui->facesButton->geometry().x(),510, 300);
+    mFacesDialog.exec();
+}
+
+void ChatForm::facesClicked(Image image){
+    Image img = (Image)image.scaled(40, 40);
+    ui->messageTextEdit->setHtml(ui->messageTextEdit->toHtml()+"<img src=\"data:image/png;base64,"+img.toBase64Data()+"\"/>");
 }

@@ -14,6 +14,7 @@
 #include "model/FileSender.h"
 #include "model/FileReceiver.h"
 #include "service/StorageService.h"
+#include "model/Image.h"
 
 bool setSkin(QApplication* const app, QString const &skinFile)
 {
@@ -56,8 +57,12 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);
 
-    QIcon icon(":/images/default_user_icon.png");
-    qDebug() << icon.name();
+//    QIcon icon1(":/images/default_user_icon.png");
+//    QString data = ((Image) icon1.pixmap(72,72).toImage()).toBase64Data();
+//    QImage img = (QImage) Image::fromBase64Data(data);
+
+//    img.save("D:/test.jpg");
+
     MainWindow *w = MainWindow::getMainWindow();
     w->show();
 
