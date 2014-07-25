@@ -33,7 +33,7 @@
 #include "MessageDialog.h"
 #include <QDesktopServices>
 #include "SharedFilesDialog.h"
-#include "FullScreenWidget.h"
+#include "ScreenshotsWidget.h"
 
 namespace Ui {
 class ChatForm;
@@ -134,8 +134,8 @@ private:
     void startShake();
 
     // screen shot
-    QPixmap shotScreenFullPixmap; //全屏图片
-    FullScreenWidget *shotScreenFullWidget;
+    QPixmap ScreenshotsPixmap; //全屏图片
+    ScreenshotsWidget *mScreenshotsWidget;
 };
 
 #endif // CHATFORM_H

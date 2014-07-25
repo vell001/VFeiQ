@@ -1,5 +1,5 @@
-#include "FullScreenWidget.h"
-FullScreenWidget::FullScreenWidget()
+#include "ScreenshotsWidget.h"
+ScreenshotsWidget::ScreenshotsWidget()
 {
     setWindowState(Qt::WindowActive|Qt::WindowFullScreen);
     tipWidth = 300; //温馨提示框的宽度
@@ -9,7 +9,7 @@ FullScreenWidget::FullScreenWidget()
     initFullScreenWidget();
 }
 
-void FullScreenWidget::initSelectedMenu()
+void ScreenshotsWidget::initSelectedMenu()
 {
     savePixmapAction = new QAction(tr("保存选区"),this);
     cancelAction = new QAction(tr("重选"),this);
@@ -21,7 +21,7 @@ void FullScreenWidget::initSelectedMenu()
     connect(quitAction,SIGNAL(triggered()),this,SLOT(hide()));
 }
 
-void FullScreenWidget::savePixmap()
+void ScreenshotsWidget::savePixmap()
 {
     QString fileName;
     fileName = QFileDialog::getSaveFileName(this,tr("保存图片"),QDir::currentPath(),tr("Images (*.jpg *.png *.bmp)"));
@@ -32,7 +32,7 @@ void FullScreenWidget::savePixmap()
     hide();
 }
 
-void FullScreenWidget::loadBackgroundPixmap(const QPixmap &bgPixmap)
+void ScreenshotsWidget::loadBackgroundPixmap(const QPixmap &bgPixmap)
 {
     int width,height;
     width = QApplication::desktop()->size().width();
@@ -41,7 +41,7 @@ void FullScreenWidget::loadBackgroundPixmap(const QPixmap &bgPixmap)
     loadBackgroundPixmap(bgPixmap,0,0,width,height);
 }
 
-void FullScreenWidget::loadBackgroundPixmap(const QPixmap &bgPixmap, int x, int y, int width, int height)
+void ScreenshotsWidget::loadBackgroundPixmap(const QPixmap &bgPixmap, int x, int y, int width, int height)
 {
     loadPixmap = bgPixmap;
     screenx = x;
@@ -51,7 +51,7 @@ void FullScreenWidget::loadBackgroundPixmap(const QPixmap &bgPixmap, int x, int 
     initFullScreenWidget();
 }
 
-QPixmap FullScreenWidget::getFullScreenPixmap()
+QPixmap ScreenshotsWidget::getFullScreenPixmap()
 {
     initFullScreenWidget();
     QPixmap result = QPixmap();
@@ -60,7 +60,7 @@ QPixmap FullScreenWidget::getFullScreenPixmap()
     return result;
 }
 
-void FullScreenWidget::paintEvent(QPaintEvent *event)
+void ScreenshotsWidget::paintEvent(QPaintEvent *event)
 {
     QColor shadowColor;
     shadowColor= QColor(0,0,0,100); //阴影颜色设置
@@ -101,7 +101,7 @@ void FullScreenWidget::paintEvent(QPaintEvent *event)
 
 }
 
-void FullScreenWidget::keyPressEvent(QKeyEvent *event)
+void ScreenshotsWidget::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Escape){
         initFullScreenWidget();
@@ -109,7 +109,7 @@ void FullScreenWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void FullScreenWidget::mousePressEvent(QMouseEvent *event)
+void ScreenshotsWidget::mousePressEvent(QMouseEvent *event)
 {
     //当开始进行拖动进行选择区域时,确定开始选取的beginPoint坐标
     if(event->button() == Qt::LeftButton && currentShotState == initShot){
@@ -131,7 +131,7 @@ void FullScreenWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void FullScreenWidget::mouseReleaseEvent(QMouseEvent *event)
+void ScreenshotsWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton && currentShotState == beginShot){
         currentShotState = finishShot;
@@ -153,7 +153,7 @@ void FullScreenWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void FullScreenWidget::mouseMoveEvent(QMouseEvent *event)
+void ScreenshotsWidget::mouseMoveEvent(QMouseEvent *event)
 {
     //当拖动时，动态的更新所选择的区域
     if(currentShotState == beginShot){
@@ -171,7 +171,7 @@ void FullScreenWidget::mouseMoveEvent(QMouseEvent *event)
     setMouseTracking(true);
 }
 
-void FullScreenWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void ScreenshotsWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(currentShotState == finishShot || currentShotState == finishMoveShot || currentShotState == finishControl){
         emit finishPixmap(shotPixmap); //当完成时发送finishPixmap信号
@@ -179,7 +179,7 @@ void FullScreenWidget::mouseDoubleClickEvent(QMouseEvent *event)
     }
 }
 
-QRect FullScreenWidget::getRect(const QPoint &beginPoint, const QPoint &endPoint)
+QRect ScreenshotsWidget::getRect(const QPoint &beginPoint, const QPoint &endPoint)
 {
     int x,y,width,height;
     width = qAbs(beginPoint.x() - endPoint.x());
@@ -190,7 +190,7 @@ QRect FullScreenWidget::getRect(const QPoint &beginPoint, const QPoint &endPoint
     return QRect(x,y,width,height);
 }
 
-void FullScreenWidget::initFullScreenWidget()
+void ScreenshotsWidget::initFullScreenWidget()
 {
     currentShotState = initShot;
     controlValue = moveControl0;
@@ -211,7 +211,7 @@ void FullScreenWidget::initFullScreenWidget()
     setCursor(Qt::CrossCursor);
 }
 
-bool FullScreenWidget::isInSelectedRect(const QPoint &point)
+bool ScreenshotsWidget::isInSelectedRect(const QPoint &point)
 {
     int x,y;
     QRect selectedRect;
@@ -225,13 +225,13 @@ bool FullScreenWidget::isInSelectedRect(const QPoint &point)
     return selectedRect.contains(x,y);
 }
 
-void FullScreenWidget::cancelSelectedRect()
+void ScreenshotsWidget::cancelSelectedRect()
 {
     initFullScreenWidget();
     update(); //进行重绘，将选取区域去掉
 }
 
-void FullScreenWidget::contextMenuEvent(QContextMenuEvent *event)
+void ScreenshotsWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     initSelectedMenu();
 
@@ -246,7 +246,7 @@ void FullScreenWidget::contextMenuEvent(QContextMenuEvent *event)
     contextMenu->exec(event->pos());
 }
 
-void FullScreenWidget::drawTipsText()
+void ScreenshotsWidget::drawTipsText()
 {
     int x = (screenwidth - tipWidth)/2;
     int y = (screenheight - tipHeight)/2;
@@ -260,7 +260,7 @@ void FullScreenWidget::drawTipsText()
 
 }
 
-QRect FullScreenWidget::getSelectedRect()
+QRect ScreenshotsWidget::getSelectedRect()
 {
     if(currentShotState == beginMoveShot){
         return getMoveAllSelectedRect();
@@ -273,7 +273,7 @@ QRect FullScreenWidget::getSelectedRect()
     }
 }
 
-void FullScreenWidget::updateBeginEndPointValue(const QRect &rect)
+void ScreenshotsWidget::updateBeginEndPointValue(const QRect &rect)
 {
     beginPoint = rect.topLeft();
     endPoint = rect.bottomRight();
@@ -282,7 +282,7 @@ void FullScreenWidget::updateBeginEndPointValue(const QRect &rect)
     moveEndPoint = QPoint(0,0);
 }
 
-void FullScreenWidget::checkMoveEndPoint()
+void ScreenshotsWidget::checkMoveEndPoint()
 {
     int x,y;
     QRect selectedRect = getRect(beginPoint, endPoint);
@@ -307,7 +307,7 @@ void FullScreenWidget::checkMoveEndPoint()
     }
 }
 
-void FullScreenWidget::draw8ControlPoint(const QRect &rect)
+void ScreenshotsWidget::draw8ControlPoint(const QRect &rect)
 {
     int x,y;
     QColor color= QColor(0,0,255); //画点的颜色设置
@@ -351,7 +351,7 @@ void FullScreenWidget::draw8ControlPoint(const QRect &rect)
     painter.fillRect(rcRect,color);
 }
 
-void FullScreenWidget::updateMouseShape(const QPoint &point)
+void ScreenshotsWidget::updateMouseShape(const QPoint &point)
 {
     switch(currentShotState){
     case initShot:
@@ -378,7 +378,7 @@ void FullScreenWidget::updateMouseShape(const QPoint &point)
     }
 }
 
-void FullScreenWidget::updateMoveControlMouseShape(controlPointEnum controlValue){
+void ScreenshotsWidget::updateMoveControlMouseShape(controlPointEnum controlValue){
     switch(controlValue){
     case moveControl1:
     case moveControl5:
@@ -402,9 +402,9 @@ void FullScreenWidget::updateMoveControlMouseShape(controlPointEnum controlValue
     }
 }
 
-FullScreenWidget::controlPointEnum FullScreenWidget::getMoveControlState(const QPoint &point)
+ScreenshotsWidget::controlPointEnum ScreenshotsWidget::getMoveControlState(const QPoint &point)
 {
-    FullScreenWidget::controlPointEnum result = moveControl0;
+    ScreenshotsWidget::controlPointEnum result = moveControl0;
     if(currentShotState == initShot || currentShotState == beginShot)  {
         result = moveControl0;
     }
@@ -439,7 +439,7 @@ FullScreenWidget::controlPointEnum FullScreenWidget::getMoveControlState(const Q
     return result;
 }
 
-QRect FullScreenWidget::getMoveAllSelectedRect(void)
+QRect ScreenshotsWidget::getMoveAllSelectedRect(void)
 {
     QRect result;
     QPoint tmpBeginPoint,tmpEndPoint;
@@ -456,7 +456,7 @@ QRect FullScreenWidget::getMoveAllSelectedRect(void)
     return result;
 }
 
-QRect FullScreenWidget::getMoveControlSelectedRect(void)
+QRect ScreenshotsWidget::getMoveControlSelectedRect(void)
 {
     int x,y,w,h;
     QRect rect = getRect(beginPoint,endPoint);
@@ -511,12 +511,12 @@ QRect FullScreenWidget::getMoveControlSelectedRect(void)
     return QRect(x,y,w,h); //获取选区
 }
 
-int FullScreenWidget::getMinValue(int num1, int num2)
+int ScreenshotsWidget::getMinValue(int num1, int num2)
 {
     return num1<num2?num1:num2;
 }
 
-void FullScreenWidget::drawSelectedPixmap(void)
+void ScreenshotsWidget::drawSelectedPixmap(void)
 {
     painter.drawRect(selectedRect); //画选中的矩形框
     shotPixmap = loadPixmap.copy(selectedRect);  //更新选区的Pixmap
@@ -526,7 +526,7 @@ void FullScreenWidget::drawSelectedPixmap(void)
     draw8ControlPoint(selectedRect); //画出选区的8个控制点
 }
 
-void FullScreenWidget::drawXYWHInfo(void)
+void ScreenshotsWidget::drawXYWHInfo(void)
 {
     int x,y;
     QColor color = QColor(239,234,228,200);

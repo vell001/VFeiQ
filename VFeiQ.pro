@@ -37,7 +37,7 @@ SOURCES += main.cpp\
     service/FileMessageService.cpp \
     service/UserInfoService.cpp \
     GamesDialog.cpp \
-    FullScreenWidget.cpp
+    ScreenshotsWidget.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -63,7 +63,7 @@ HEADERS  += MainWindow.h \
     service/FileMessageService.h \
     service/UserInfoService.h \
     GamesDialog.h \
-    FullScreenWidget.h
+    ScreenshotsWidget.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \

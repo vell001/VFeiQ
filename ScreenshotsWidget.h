@@ -8,12 +8,12 @@
 #include <QPainter>
 #include <QBrush>
 
-class FullScreenWidget : public QWidget{
+class ScreenshotsWidget : public QWidget{
 
     Q_OBJECT
 
 public:
-    FullScreenWidget(); //构造函数
+    ScreenshotsWidget(); //构造函数
     enum shotState{initShot,beginShot,finishShot,endShot,beginMoveShot,finishMoveShot,beginControl,finishControl}; //进行截屏的状态
     //移动选区中的8个控制点，按照顺时针方向从左上控制点到左中控制点分配编号为1～8
     enum controlPointEnum{moveControl0,moveControl1,moveControl2,moveControl3,moveControl4,moveControl5,moveControl6,moveControl7,moveControl8};
