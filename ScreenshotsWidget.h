@@ -24,6 +24,7 @@ public slots:
     void loadBackgroundPixmap(const QPixmap &bgPixmap, int x, int y, int width, int height); //加载背景pixmap槽函数，设置x,y,width,height
     void cancelSelectedRect(); //取消选择区域
     void savePixmap(); //保选取行为的方法
+    void sendPixmap(); //发送截图行为的方法
 
 signals:
     void finishPixmap(const QPixmap &finishPixmap); //完成切图后的图片,发送信号给连接者
@@ -46,6 +47,7 @@ private:
     shotState currentShotState; //当前的截屏状态
     controlPointEnum controlValue; //记录移动控制点的值
     QAction *savePixmapAction; //保存图片行为
+    QAction *sendPixmapAction; //发送图片行为
     QAction *cancelAction; //取消选取行为
     QAction *quitAction; //退出选取行为
     QMenu *contextMenu; //选中区域右键菜单

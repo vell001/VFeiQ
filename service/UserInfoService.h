@@ -12,6 +12,7 @@ class UserInfoService : public UdpService
 public:
     static UserInfoService *getService();
 signals:
+
 public slots:
     void sendMyselfInfo(QHostAddress ipAddress = QHostAddress("255.255.255.255"));
 protected:

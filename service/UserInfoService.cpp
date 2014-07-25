@@ -6,6 +6,7 @@ UserInfoService::UserInfoService(QObject *parent) :
     myself(UserService::getService()->getMyself())
 {
 }
+
 UserInfoService *UserInfoService::getService(){
     static UserInfoService mService;
     return &mService;

@@ -11,11 +11,13 @@ ScreenshotsWidget::ScreenshotsWidget()
 
 void ScreenshotsWidget::initSelectedMenu()
 {
-    savePixmapAction = new QAction(tr("保存选区"),this);
+    sendPixmapAction = new QAction(tr("发送截图"),this);
+    savePixmapAction = new QAction(tr("保存截图"),this);
     cancelAction = new QAction(tr("重选"),this);
     quitAction = new QAction(tr("退出"),this);
     contextMenu = new QMenu(this);
 
+    connect(sendPixmapAction,SIGNAL(triggered()),this,SLOT(sendPixmap()));
     connect(savePixmapAction,SIGNAL(triggered()),this,SLOT(savePixmap()));
     connect(cancelAction,SIGNAL(triggered()),this,SLOT(cancelSelectedRect()));
     connect(quitAction,SIGNAL(triggered()),this,SLOT(hide()));
@@ -29,6 +31,11 @@ void ScreenshotsWidget::savePixmap()
         return;
 
     shotPixmap.save(fileName);
+    hide();
+}
+
+void ScreenshotsWidget::sendPixmap(){
+    emit finishPixmap(shotPixmap); //当完成时发送finishPixmap信号
     hide();
 }
 
@@ -236,6 +243,7 @@ void ScreenshotsWidget::contextMenuEvent(QContextMenuEvent *event)
     initSelectedMenu();
 
     if(isInSelectedRect(event->pos())){
+        contextMenu->addAction(sendPixmapAction);
         contextMenu->addAction(savePixmapAction);
     }
     else{
