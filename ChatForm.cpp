@@ -8,7 +8,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     sender(UserService::getService()->getMyself()),
     mChatRecords(ChatRecordService::getService()->getChatRecordsByUserUuid(receiver->getUuid(), ChatRecord::NotRead)),
     mIconService(IconService::getService()),
-    fullWidget(new FullScreenWidget)
+    shotScreenFullWidget(new FullScreenWidget)
 {
     ui->setupUi(this);
 
@@ -474,7 +474,7 @@ void ChatForm::on_sharedFilesButton_clicked()
 
 void ChatForm::on_grapScreenButton_clicked()
 {
-    QPixmap pixmap = fullWidget->getFullScreenPixmap();
-    fullWidget->show();
-    fullWidget->loadBackgroundPixmap(pixmap);
+    QPixmap pixmap = shotScreenFullWidget->getFullScreenPixmap();
+    shotScreenFullWidget->show();
+    shotScreenFullWidget->loadBackgroundPixmap(pixmap);
 }
