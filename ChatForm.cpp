@@ -20,7 +20,7 @@ ChatForm::ChatForm(User *receiver, QWidget *parent) :
     this->mChatService = ChatService::getService();
     this->mFileMsgService = FileMessageService::getService();
 
-    ui->userIcon->setIcon(mIconService->getUserIconByUuid(this->receiver->getIconUuid()));
+    ui->userIcon->setIcon(this->receiver->getIcon());
     ui->userIcon->setIconSize(QSize(40, 40));
 
     ui->usernameLabel->setText(this->receiver->getName());

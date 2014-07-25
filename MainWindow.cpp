@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /* view */
     ui->userNameLabel->setText(myself->getName());
     ui->userImage->setIconSize(QSize(50, 50));
-    ui->userImage->setIcon(mIconService->getUserIconByUuid(myself->getIconUuid()));
+    ui->userImage->setIcon(myself->getIcon());
     ui->weatherLabel->setText(QString("<img src=\":/images/weather_1.gif\"/>"));
     ui->searchLabel->setText(QString("<img src=\":/images/search.png\" width='24' height='24'/>"));
     ui->signatureLabel->setText(myself->getInfo());
@@ -109,9 +109,6 @@ void MainWindow::userInfoReceived(QHostAddress senderIp, quint16 senderPort, Cha
         if(user.getLogTime().isNull() || user.getLogTime().isValid()) {
             user.setLogTime(QDateTime::currentDateTime());
         }
-        if(!mIconService->containsUserIcon(user.getIconUuid())) {
-            mIconService->addIconToGet(user.getIconUuid(), senderIp);
-        }
         if(user.getUuid() != myself->getUuid()) { // others info
             if(user.getStatus() == User::Offline) {
                 MessageDialog *mMessageDialog = new MessageDialog(tr("下线提醒"), QString(tr("%1下线了~")).arg(user.getName()), logoIcon);
@@ -159,7 +156,7 @@ void MainWindow::updateContentsTreeWidget(){
                            .arg(user->getStatusStr())
                            .arg(user->getIp().toString()));
             cItem->setData(0, Qt::UserRole, user->getUuid().toString());
-            cItem->setIcon(0, mIconService->getUserIconByUuid(user->getIconUuid()));
+            cItem->setIcon(0, user->getIcon());
             if(it.key() == myself->getUuid()) {
                 cItem->setBackgroundColor(0, QColor("#FFEBCD"));
             }
@@ -176,7 +173,7 @@ void MainWindow::updateContentsTreeWidget(){
 }
 
 void MainWindow::updateMyselfInfoView(){
-    ui->userImage->setIcon(mIconService->getUserIconByUuid(myself->getIconUuid()));
+    ui->userImage->setIcon(myself->getIcon());
     ui->userNameLabel->setText(myself->getName());
     ui->signatureLabel->setText(myself->getInfo());
 }
@@ -189,7 +186,7 @@ void MainWindow::chatReceiveSuccess(QHostAddress senderIp, quint16 senderPort, C
             mChatRecords->append(ChatRecord(message));
             MessageDialog *mMessageDialog = new MessageDialog(tr("新消息提醒！！！"),
                     QString(tr("%1:\r\n%2")).arg((*mFriends)[message.getSenderUuid()].getName()).arg(message.getContent()),
-                    mIconService->getUserIconByUuid((*mFriends)[message.getSenderUuid()].getIconUuid()),
+                    (*mFriends)[message.getSenderUuid()].getIcon(),
                     10000,
                     message.getSenderUuid());
             mMessageDialog->show();
@@ -206,7 +203,7 @@ void MainWindow::fMsgReceiveSuccess(QHostAddress senderIp, quint16 senderPort, C
         if(!mChatForms->contains(message.getSenderUuid())){
             MessageDialog *mMessageDialog = new MessageDialog(tr("新消息提醒！！！"),
                     QString(tr("%1:\r\n%2")).arg((*mFriends)[message.getSenderUuid()].getName()).arg(FileMessage::fileMessagesToHTMLStr(*FileMessage::parseFileMessages(message.getContent()))),
-                    mIconService->getUserIconByUuid((*mFriends)[message.getSenderUuid()].getIconUuid()),
+                    (*mFriends)[message.getSenderUuid()].getIcon(),
                     10000,
                     message.getSenderUuid());
             mMessageDialog->show();
@@ -297,7 +294,7 @@ void MainWindow::on_searchEdit_textChanged(const QString &arg1)
             QListWidgetItem *item = new QListWidgetItem(searchResultWidget);
             item->setText(QString("%1\r\n%2").arg(user->getName()).arg(user->getIp().toString()));
             item->setData(Qt::UserRole, user->getUuid().toString());
-            item->setIcon(mIconService->getUserIconByUuid(user->getIconUuid()));
+            item->setIcon(user->getIcon());
         }
     }
     searchResultWidget->resize(searchResultWidget->geometry().width(),
@@ -346,7 +343,7 @@ void MainWindow::updateRecentFriendsListWidget() {
     foreach (QDateTime time, times) {
         User *user = &(*recentFriends)[time.toString()];
         QListWidgetItem *item = new QListWidgetItem(ui->recentContentsListWidget);
-        item->setIcon(mIconService->getUserIconByUuid(user->getIconUuid()));
+        item->setIcon(user->getIcon());
         item->setText(QString("%1\r\n%2").arg(user->getName()).arg(time.toString()));
         item->setData(Qt::UserRole, user->getUuid().toString());
 

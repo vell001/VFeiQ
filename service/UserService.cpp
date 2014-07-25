@@ -35,5 +35,4 @@ void UserService::insertRecentFriend(const User &user){
 }
 
 UserService::~UserService(){
-    mStorageService->storeMyself(myself);
 }

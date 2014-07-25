@@ -73,6 +73,7 @@ User *StorageService::getMyself(){
         myself = new User;
         myself->setName("vell001");
         myself->setStatus(User::Online);
+        myself->setIcon(QIcon(":/userIcons/{23077463-f798-4ca9-b2b0-a4a1600f095f}.png"));
         storeMyself(myself);
     }
     return myself;

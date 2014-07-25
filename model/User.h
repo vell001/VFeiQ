@@ -14,6 +14,9 @@
 #include <QDateTime>
 #include <QHostAddress>
 #include <QtXml>
+#include <QPixmap>
+#include <QIcon>
+#include "Image.h"
 
 class User : public QObject
 {
@@ -40,10 +43,13 @@ public:
 
     QString toString();
 
+    static QString getCompressDataFromIcon(QIcon icon);
+    static QIcon getIconFromCompressData(QString data);
+
     QUuid getUuid();
     QHostAddress getIp();
     QString getName();
-    QUuid getIconUuid();
+    QIcon getIcon();
     QDateTime getLogTime();
     QString getInfo();
     Status getStatus();
@@ -52,7 +58,7 @@ public:
     void setUuid(const QUuid &uuid);
     void setIp(const QHostAddress &ip);
     void setName(const QString &name);
-    void setIconUuid(const QUuid &iconUuid);
+    void setIcon(const QIcon &icon);
     void setLogTime(const QDateTime &logTime);
     void setInfo(const QString &info);
     void setStatus(Status status);
@@ -67,7 +73,7 @@ private:
     QUuid uuid;
     QHostAddress ip;
     QString name;
-    QUuid iconUuid;
+    QIcon icon;
     QDateTime logTime;
     QString info;
     Status status;

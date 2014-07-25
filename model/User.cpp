@@ -17,7 +17,7 @@ User::User(const QHostAddress &ip, const QString &name, QObject *parent) :
 User::User(const QString &userXMLStr, QObject *parent) :
     QObject(parent)
 {
-//    <user id="[uuid]" ip="[ip]" name="[name]" iconUuid="[iconUuid]" logTime="[logTime]" info="[info]" status="[status]"/>
+//    <user id="[uuid]" ip="[ip]" name="[name]" logTime="[logTime]" info="[info]" status="[status]" iconData="[iconData]" />
     QDomDocument userDoc;
     QString errorMsg;
     userDoc.setContent(userXMLStr, &errorMsg);
@@ -29,10 +29,11 @@ User::User(const QString &userXMLStr, QObject *parent) :
     uuid = QUuid(userE.attribute("id"));
     ip = QHostAddress(userE.attribute("ip"));
     name = userE.attribute("name");
-    iconUuid = QUuid(userE.attribute("iconUuid"));
     logTime = QDateTime::fromString(userE.attribute("logTime"));
     info = userE.attribute("info");
     status = (Status) userE.attribute("status").toInt();
+
+    icon = getIconFromCompressData(userE.attribute("iconData"));
 }
 
 User::User(const User &user)
@@ -40,7 +41,7 @@ User::User(const User &user)
     uuid = user.uuid;
     ip = user.ip;
     name = user.name;
-    iconUuid = user.iconUuid;
+    icon = user.icon;
     logTime = user.logTime;
     info = user.info;
     status = user.status;
@@ -51,7 +52,7 @@ User &User::operator=(const User &user)
     uuid = user.uuid;
     ip = user.ip;
     name = user.name;
-    iconUuid = user.iconUuid;
+    icon = user.icon;
     logTime = user.logTime;
     info = user.info;
     status = user.status;
@@ -62,7 +63,7 @@ bool User::operator== ( const User & user ) const{
     if(uuid == user.uuid
        && ip == user.ip
        && name == user.name
-       && iconUuid == user.iconUuid
+       && getCompressDataFromIcon(icon) == getCompressDataFromIcon(user.icon)
        && logTime == user.logTime
        && info == user.info
        && status == user.status) {
@@ -81,19 +82,31 @@ bool User::operator!= ( const User & user ) const{
 }
 
 QString User::toString(){
-//    <user id="[uuid]" ip="[ip]" name="[name]" iconUuid="[iconUuid]" logTime="[logTime]" info="[info]" status="[status]"/>
+//    <user id="[uuid]" ip="[ip]" name="[name]" logTime="[logTime]" info="[info]" status="[status]" iconData="[iconData]" />
     QDomDocument userDoc;
     QDomElement userE = userDoc.createElement("user");
     userE.setAttribute("id", uuid.toString());
     userE.setAttribute("ip", ip.toString());
     userE.setAttribute("name", name);
-    userE.setAttribute("iconUuid", iconUuid.toString());
     userE.setAttribute("logTime", logTime.toString());
     userE.setAttribute("info", info);
     userE.setAttribute("status", (int)status);
 
+
+    userE.setAttribute("iconData", getCompressDataFromIcon(icon));
+
     userDoc.appendChild(userE);
     return userDoc.toString(-1);
+}
+
+QString User::getCompressDataFromIcon(QIcon icon){
+    Image img = (Image)icon.pixmap(72, 72).toImage();
+    return img.toBase64Data("PNG", true);
+}
+
+QIcon User::getIconFromCompressData(QString data){
+    Image img = Image::fromBase64Data(data, true);
+    return QIcon(QPixmap::fromImage(img));
 }
 
 QUuid User::getUuid(){
@@ -108,8 +121,8 @@ QString User::getName(){
     return this->name;
 }
 
-QUuid User::getIconUuid(){
-    return this->iconUuid;
+QIcon User::getIcon(){
+    return this->icon;
 }
 
 QDateTime User::getLogTime(){
@@ -157,8 +170,8 @@ void User::setName(const QString &name){
     this->name = name;
 }
 
-void User::setIconUuid(const QUuid &iconUuid){
-    this->iconUuid = iconUuid;
+void User::setIcon(const QIcon &icon){
+    this->icon = icon;
 }
 
 void User::setLogTime(const QDateTime &logTime){
