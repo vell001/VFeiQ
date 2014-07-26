@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->userNameLabel->setText(myself->getName());
     ui->userImage->setIconSize(QSize(50, 50));
     ui->userImage->setIcon(myself->getIcon());
-    ui->weatherLabel->setText(QString("<img src=\":/images/weather_1.gif\"/>"));
+//    ui->weatherLabel->setText(QString("<a href=\"\"><img src=\":/images/weather_1.gif\"/></a>"));
     ui->searchLabel->setText(QString("<img src=\":/images/search.png\" width='24' height='24'/>"));
     ui->signatureLabel->setText(myself->getInfo());
     ui->contentsTreeWidget->setIconSize(QSize(40, 40));
@@ -120,6 +120,7 @@ void MainWindow::userInfoReceived(QHostAddress senderIp, quint16 senderPort, Cha
             }
         } else { // myself info
             updateMyselfInfoView();
+            *myself = user;
         }
 
         if(mFriends->contains(user.getUuid())) {
@@ -133,8 +134,7 @@ void MainWindow::userInfoReceived(QHostAddress senderIp, quint16 senderPort, Cha
         updateContentsTreeWidget();
 
         if(message.getMode() == ChatMessage::Request) {
-            ChatMessage myselfMessage(ChatMessage::Response, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
-            mUserInfoService->send(myselfMessage, senderIp);
+            mUserInfoService->sendMyselfInfo(ChatMessage::Response);
         }
     }
 }
@@ -406,7 +406,13 @@ void MainWindow::on_gamesButton_clicked()
     gamesDialog->show();
 }
 
+void MainWindow::on_weatherButton_clicked()
+{
+    WeatherDialog *dialog = new WeatherDialog;
+    dialog->show();
+}
+
 void MainWindow::on_todoButton_clicked()
 {
-    todoProcess.start("java -jar ../VFeiQ/todo/ToDo002.jar");
+    todoProgress.start("java -jar ../VFeiQ/todo/ToDo002.jar");
 }

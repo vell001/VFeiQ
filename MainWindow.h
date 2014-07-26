@@ -32,7 +32,7 @@
 #include "SetShareFilesDialog.h"
 #include "SettingDialog.h"
 #include "GamesDialog.h"
-#include <QProcess>
+#include "WeatherDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -81,6 +81,8 @@ private slots:
 
     void on_gamesButton_clicked();
 
+    void on_weatherButton_clicked();
+
     void on_todoButton_clicked();
 
 private:
@@ -91,6 +93,7 @@ private:
     UserService *mUserService;
     FileShareService *mFileShareService;
     User *myself;
+
     void updateContentsTreeWidget();
 
 
@@ -114,8 +117,8 @@ private:
     void updateRecentFriendsListWidget();
     void updateMyselfInfoView();
 
-    // ToDo progress
-    QProcess todoProcess;
+    // todo progress
+    QProcess todoProgress;
 };
 
 #endif // MAINWINDOW_H

@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     GamesDialog.cpp \
     ScreenshotsWidget.cpp \
     model/Image.cpp \
-    FacesDialog.cpp
+    FacesDialog.cpp \
+    WeatherDialog.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -67,7 +68,8 @@ HEADERS  += MainWindow.h \
     GamesDialog.h \
     ScreenshotsWidget.h \
     model/Image.h \
-    FacesDialog.h
+    FacesDialog.h \
+    WeatherDialog.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
@@ -76,7 +78,8 @@ FORMS    += MainWindow.ui \
     SetShareFilesDialog.ui \
     SettingDialog.ui \
     GamesDialog.ui \
-    FacesDialog.ui
+    FacesDialog.ui \
+    WeatherDialog.ui
 
 RESOURCES += \
     skins.qrc \

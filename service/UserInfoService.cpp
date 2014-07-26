@@ -12,7 +12,7 @@ UserInfoService *UserInfoService::getService(){
     return &mService;
 }
 
-void UserInfoService::sendMyselfInfo(QHostAddress ipAddress){
-    ChatMessage userInfoMes(ChatMessage::Request, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
+void UserInfoService::sendMyselfInfo(ChatMessage::Mode mode,QHostAddress ipAddress){
+    ChatMessage userInfoMes(mode, myself->getUuid(), myself->toString(), ChatMessage::UserXML);
     UdpService::send(userInfoMes, ipAddress);
 }
