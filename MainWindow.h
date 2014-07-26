@@ -32,6 +32,8 @@
 #include "SetShareFilesDialog.h"
 #include "SettingDialog.h"
 #include "GamesDialog.h"
+#include "WeatherDialog.h"
+#include "qschedule.h"
 
 namespace Ui {
 class MainWindow;
@@ -80,6 +82,10 @@ private slots:
 
     void on_gamesButton_clicked();
 
+    void on_weatherButton_clicked();
+
+    void on_toolButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     UserInfoService *mUserInfoService;
@@ -88,6 +94,8 @@ private:
     UserService *mUserService;
     FileShareService *mFileShareService;
     User *myself;
+    Qschedule qschedule;
+
     void updateContentsTreeWidget();
 
 

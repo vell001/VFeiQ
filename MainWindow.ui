@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
+    <width>286</width>
     <height>651</height>
    </rect>
   </property>
@@ -218,9 +218,31 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="weatherLabel">
+            <widget class="QToolButton" name="weatherButton">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
              <property name="text">
-              <string>weather</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="images.qrc">
+               <normaloff>:/images/weather_1.gif</normaloff>:/images/weather_1.gif</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -260,12 +282,8 @@
        </size>
       </property>
       <widget class="QWidget" name="contentsTab">
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/images/contacts.png</normaloff>:/images/contacts.png</iconset>
-       </attribute>
        <attribute name="title">
-        <string/>
+        <string>contents</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="spacing">
@@ -301,12 +319,8 @@
        </layout>
       </widget>
       <widget class="QWidget" name="groupsTab">
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/images/groups.png</normaloff>:/images/groups.png</iconset>
-       </attribute>
        <attribute name="title">
-        <string/>
+        <string>groups</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <property name="spacing">
@@ -365,6 +379,21 @@
         <string>RecentContents</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <property name="spacing">

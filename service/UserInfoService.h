@@ -14,7 +14,7 @@ public:
 signals:
 
 public slots:
-    void sendMyselfInfo(QHostAddress ipAddress = QHostAddress("255.255.255.255"));
+    void sendMyselfInfo(ChatMessage::Mode mode = ChatMessage::Request, QHostAddress ipAddress = QHostAddress("255.255.255.255"));
 protected:
 private:
     explicit UserInfoService(QObject *parent = 0);

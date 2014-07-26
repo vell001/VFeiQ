@@ -495,3 +495,14 @@ void ChatForm::facesClicked(Image image){
     Image img = (Image)image.scaled(40, 40);
     ui->messageTextEdit->setHtml(ui->messageTextEdit->toHtml()+"<img src=\"data:image/png;base64,"+img.toBase64Data()+"\"/>");
 }
+
+void ChatForm::on_sendImageButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                     QCoreApplication::applicationDirPath(),
+                                                     tr("Images (*.png *.jpg)"));
+    if(QFile(fileName).exists()) {
+        Image img = (Image)QImage(fileName);
+        ui->messageTextEdit->setHtml(ui->messageTextEdit->toHtml()+"<img src=\"data:image/png;base64,"+img.toBase64Data()+"\"/>");
+    }
+}

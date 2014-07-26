@@ -39,7 +39,12 @@ SOURCES += main.cpp\
     GamesDialog.cpp \
     ScreenshotsWidget.cpp \
     model/Image.cpp \
-    FacesDialog.cpp
+    FacesDialog.cpp \
+    WeatherDialog.cpp \
+    addevt.cpp \
+    allevents.cpp \
+    deletevent.cpp \
+    qschedule.cpp
 
 HEADERS  += MainWindow.h \
     ChatForm.h \
@@ -67,7 +72,13 @@ HEADERS  += MainWindow.h \
     GamesDialog.h \
     ScreenshotsWidget.h \
     model/Image.h \
-    FacesDialog.h
+    FacesDialog.h \
+    WeatherDialog.h \
+    addevt.h \
+    allevents.h \
+    deletevent.h \
+    qschedule.h \
+    Record.h
 
 FORMS    += MainWindow.ui \
     ChatForm.ui \
@@ -76,13 +87,18 @@ FORMS    += MainWindow.ui \
     SetShareFilesDialog.ui \
     SettingDialog.ui \
     GamesDialog.ui \
-    FacesDialog.ui
+    FacesDialog.ui \
+    WeatherDialog.ui \
+    addevt.ui \
+    allevents.ui \
+    deletevent.ui \
+    qschedule.ui
 
 RESOURCES += \
     skins.qrc \
-    images.qrc \
     normalUserIcons.qrc \
-    faces.qrc
+    faces.qrc \
+    images.qrc
 
 #DESTDIR = ./bin
 
