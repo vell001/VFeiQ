@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
+    <width>286</width>
     <height>651</height>
    </rect>
   </property>
@@ -260,12 +260,8 @@
        </size>
       </property>
       <widget class="QWidget" name="contentsTab">
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/images/contacts.png</normaloff>:/images/contacts.png</iconset>
-       </attribute>
        <attribute name="title">
-        <string/>
+        <string>contents</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="spacing">
@@ -301,12 +297,8 @@
        </layout>
       </widget>
       <widget class="QWidget" name="groupsTab">
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/images/groups.png</normaloff>:/images/groups.png</iconset>
-       </attribute>
        <attribute name="title">
-        <string/>
+        <string>groups</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <property name="spacing">
@@ -493,7 +485,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QToolButton" name="toolButton">
+            <widget class="QToolButton" name="todoButton">
              <property name="minimumSize">
               <size>
                <width>30</width>

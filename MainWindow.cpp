@@ -405,3 +405,8 @@ void MainWindow::on_gamesButton_clicked()
     GamesDialog *gamesDialog = new GamesDialog;
     gamesDialog->show();
 }
+
+void MainWindow::on_todoButton_clicked()
+{
+    todoProcess.start("java -jar ../VFeiQ/todo/ToDo002.jar");
+}

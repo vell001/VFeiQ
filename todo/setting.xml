@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Setting><beforeSleepTime>30</beforeSleepTime><checkTime>5000</checkTime><dateFormat>yyyy-MM-dd HH:mm:ss</dateFormat><delayTime>300000</delayTime><noticeTime>300000</noticeTime><sleepDelay>0</sleepDelay><sleepTime>300000</sleepTime><toCleanStatuses>01000</toCleanStatuses><workTime>6000000</workTime></Setting>
