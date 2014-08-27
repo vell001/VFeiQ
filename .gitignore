@@ -22,3 +22,6 @@
 
 # Qt project cache
 VFeiQ.pro.user.*
+
+# linux cache file
+*~
