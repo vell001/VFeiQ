@@ -4,7 +4,6 @@
 #include <QDialog>
 #include "service/UserService.h"
 #include "service/IconService.h"
-#include "service/UserInfoService.h"
 #include <QFileDialog>
 
 namespace Ui {
@@ -34,7 +33,7 @@ private slots:
 
     void on_userCustomIconButton_clicked();
 
-    void on_userNormalIconComboBox_currentIndexChanged(int index);
+    void on_userNormalIconComboBox_activated(int index);
 
 private:
     explicit SettingDialog(QWidget *parent = 0);
@@ -43,9 +42,6 @@ private:
     User *myself;
     IconService *mIconService;
     UserService *mUserService;
-    UserInfoService *mBroadcastService;
-
-    int userIconNormalOrCustom; // 0: normal, 1: custom
 };
 
 #endif // SETTINGDIALOG_H

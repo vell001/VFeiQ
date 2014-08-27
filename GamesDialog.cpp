@@ -8,17 +8,9 @@ GamesDialog::GamesDialog(QWidget *parent) :
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
     ui->webView->setUrl(QUrl("http://www.3366.com/"));
-//    ui->webView->setUrl(QUrl("file:///D:/Qt/workspace/build-VFeiQ-MinGW-Debug/debug/wordShow/index.html"));
     ui->webView->setMouseTracking(true);
     ui->webView->setGeometry(this->geometry());
-    ui->webView->page()->settings()->setAttribute(QWebSettings::JavaEnabled, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
-    ui->webView->page()->settings()->setAttribute(QWebSettings::AutoLoadImages, true);
+
     ui->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 }
 

@@ -6,9 +6,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
     ui(new Ui::SettingDialog),
     mUserService(UserService::getService()),
     myself(UserService::getService()->getMyself()),
-    mIconService(IconService::getService()),
-    mBroadcastService(UserInfoService::getService()),
-    userIconNormalOrCustom(1)
+    mIconService(IconService::getService())
 {
     ui->setupUi(this);
     updateUserInfoView();
@@ -57,13 +55,6 @@ void SettingDialog::updateUserInfoView(){
         Icon *icon = normalIcons->value(uuid);
         ui->userNormalIconComboBox->addItem(icon->getIcon(), QString(), uuid.toString());
     }
-
-    for(int i=0; i<ui->userNormalIconComboBox->count(); i++) {
-        if(User::getCompressDataFromIcon(ui->userNormalIconComboBox->itemIcon(i)) == User::getCompressDataFromIcon(myself->getIcon())) {
-            ui->userNormalIconComboBox->setCurrentIndex(i);
-            return;
-        }
-    }
 }
 
 void SettingDialog::on_applyUserInfoButton_clicked()
@@ -71,11 +62,7 @@ void SettingDialog::on_applyUserInfoButton_clicked()
     myself->setName(ui->userNameEdit->text());
     myself->setInfo(ui->userSignatureEdit->text());
 
-    if(userIconNormalOrCustom == 0) {
-        myself->setIcon(ui->userNormalIconComboBox->itemIcon(ui->userNormalIconComboBox->currentIndex()));
-    } else if (userIconNormalOrCustom == 1) {
-        myself->setIcon(ui->userCustomIconButton->icon());
-    }
+    myself->setIcon(ui->userCustomIconButton->icon());
     mUserService->saveMyself();
 }
 
@@ -86,11 +73,10 @@ void SettingDialog::on_userCustomIconButton_clicked()
                                                      tr("Images (*.png *.jpg)"));
     if(QFile(fileName).exists()) {
         ui->userCustomIconButton->setIcon(QIcon(fileName));
-        userIconNormalOrCustom = 1;
     }
 }
 
-void SettingDialog::on_userNormalIconComboBox_currentIndexChanged(int index)
+void SettingDialog::on_userNormalIconComboBox_activated(int index)
 {
-    userIconNormalOrCustom = 0;
+    ui->userCustomIconButton->setIcon(ui->userNormalIconComboBox->itemIcon(index));
 }

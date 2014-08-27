@@ -99,6 +99,8 @@ private slots:
 
     void on_grapScreenButton_clicked();
 
+    void on_sendImageButton_clicked();
+
 signals:
     void closed(QUuid receiverUuid);
 private:

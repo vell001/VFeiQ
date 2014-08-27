@@ -124,6 +124,10 @@ void ChatForm::keyPressEvent(QKeyEvent *e){
 }
 
 void ChatForm::sendMessage() {
+    if(ui->messageTextEdit->toPlainText().isEmpty()) {
+        QMessageBox::warning(this, "null word", "please input your words to send!!!");
+        return;
+    }
     ChatMessage message(ChatMessage::Request, sender->getUuid(), ui->messageTextEdit->toHtml());
     mChatService->send(message, receiver->getIp());
     ChatRecord *record = new ChatRecord(message);
@@ -494,4 +498,15 @@ void ChatForm::on_facesButton_clicked()
 void ChatForm::facesClicked(Image image){
     Image img = (Image)image.scaled(40, 40);
     ui->messageTextEdit->setHtml(ui->messageTextEdit->toHtml()+"<img src=\"data:image/png;base64,"+img.toBase64Data()+"\"/>");
+}
+
+void ChatForm::on_sendImageButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                     QCoreApplication::applicationDirPath(),
+                                                     tr("Images (*.png *.jpg)"));
+    if(QFile(fileName).exists()) {
+        Image img = (Image)QImage(fileName);
+        ui->messageTextEdit->setHtml(ui->messageTextEdit->toHtml()+"<img src=\"data:image/png;base64,"+img.toBase64Data()+"\"/>");
+    }
 }
